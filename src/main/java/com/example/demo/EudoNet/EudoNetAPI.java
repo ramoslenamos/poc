@@ -22,9 +22,13 @@ public class EudoNetAPI {
       URL url = new URL("http://xrm3.eudonet.com/EudoAPI/Search/200");
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestProperty("Content-Type", "application/json");
-      connection.addRequestProperty("Authorization", "Basic " + token);
-      OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
-      osw.write("{\n" +
+      connection.setRequestProperty("X-Auth-Token", token);
+      connection.setRequestMethod("POST");
+      connection.setDoOutput(true);
+      connection.setDoInput(true);
+      connection.setConnectTimeout(5000);
+      OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
+      String json = "{\n" +
               " \"ShowMetadata\": true,\n" +
               " \"RowsPerPage\": 50,\n" +
               " \"NumPage\": 10,\n" +
@@ -41,7 +45,9 @@ public class EudoNetAPI {
               "   },\n" +
               "   \"InterOperator\": 0\n" +
               " },\n" +
-              "}");
+              "}";
+      osw.write(json);
+      System.out.println(json);
       response = JsonHelper.readJsonInputStream(connection.getInputStream());
     } catch (MalformedURLException e) {
       e.printStackTrace();
