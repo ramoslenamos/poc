@@ -1,5 +1,7 @@
 package com.example.demo.Dictionnary.Colonnes;
 
+import com.example.demo.Dictionnary.Tables.Dictionnary;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -16,12 +18,11 @@ public class Definition implements Serializable {
     private String idColoumn;
     @ManyToOne
     @JoinColumn(name = "idTable")
-    @Column(length = 50)
-    private String tableName;
+    private Dictionnary tableName;
     @Column(length = 50)
     private String label;
 
-    public Definition(String idColoumn, String tableName, String label) {
+    public Definition(String idColoumn, Dictionnary tableName, String label) {
         this.idColoumn = idColoumn;
         this.tableName = tableName;
         this.label = label;
@@ -46,11 +47,11 @@ public class Definition implements Serializable {
         this.idColoumn = idColoumn;
     }
 
-    public String getTableName() {
+    public Dictionnary getTableName() {
         return tableName;
     }
 
-    public void setTableName(String tableName) {
+    public void setTableName(Dictionnary tableName) {
         this.tableName = tableName;
     }
 
@@ -61,8 +62,6 @@ public class Definition implements Serializable {
     public void setLabel(String label) {
         this.label = label;
     }
-
-
 }
 
 

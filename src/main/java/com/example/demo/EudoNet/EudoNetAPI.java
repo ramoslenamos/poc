@@ -13,16 +13,18 @@ public class EudoNetAPI {
   String token;
 
   public EudoNetAPI() throws ProtocolException {
-    this.token = "Ns76s0JCf6VPKt73aoLzwzboWI7ZPoxT8wzzsVO0DYJiHzli4DJUCpjGdk8jR0tcHJLA0S3JvfQUR+asiJo8Sl4Ux4MG8Um4KWuLQm8P8/RV266rrVL+KgU56XbMQLiWXFCHtkpUQlZxfFcqABrPzbdBXOB1TAxhb0zafdtuHc2IytYpEegV/7zLr6dCjNLIScio4rIjACmZ4xKHWDOMO9/HpX8TCTlKIZD1Et3oH0x8dOOFo4QCadtK4dm2iwTZFziWaPiR7rI/+xEuZq1rz/dytiDrUpnfytaNv8YZo/BaVXOyyghIB1pYl2CS2MJw7TtMZDVf4X1J+MziS8cPsQ22+Ml3GC8JCnbCiA==";
+    this.token = "0xXinZlJxF6nF/sGHKE76tyPdPqCQsCGH7ZirCu1oAq7AQaULCYfNd2iJj7smJTV6lYrHyWsJqYV1KVbEy32wycc9zFJ2h/ZVIqIqbdObSjl1wcFtJYKQG3YF1j0wh0BA1UuJ7+owIhqKt/sjW5KNnXE9UjCVM4SIVbF1QICrxIlaSwp4dyvelNUkV75YbaUpu2UffW6kipznwXozjGRBT3o1up/pbLO0K99k6LcVNAzpnSBqnPfYjh6Bc0SL0eXXLMDqs7rwdV+UxL6zL/Nttzs6KX36qx/x4DofG3UYDDHaMqYTY0FFxyVSIAlOCG2L/mN06JMFWIKvNpygjjmCmkepIHvnYbOpdIdjA==";
   }
+
 
   public JSONObject getAllPersons() {
     JSONObject response = new JSONObject();
     try {
       URL url = new URL("http://xrm3.eudonet.com/EudoAPI/Search/200");
+
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestProperty("Content-Type", "application/json");
-      connection.setRequestProperty("X-Auth-Token", token);
+      connection.setRequestProperty("content-type", "application/json");
+      connection.addRequestProperty("x-auth", token);
       connection.setRequestMethod("POST");
       connection.setDoOutput(true);
       connection.setDoInput(true);
@@ -41,10 +43,10 @@ public class EudoNetAPI {
               "   ],\n" +
               "   \"Criteria\": {\n" +
               "     \"Operator\": 0,\n" +
-              "     \"Field\": \"209\",\n" +
+              "     \"Field\": \"209\"\n" +
               "   },\n" +
-              "   \"InterOperator\": 0\n" +
-              " },\n" +
+              "   \"InterOperator\": \"0\"\n" +
+              " }\n" +
               "}";
       osw.write(json);
       System.out.println(json);
