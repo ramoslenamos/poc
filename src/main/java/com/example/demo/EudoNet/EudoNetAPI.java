@@ -28,7 +28,7 @@ public class EudoNetAPI {
     headers.put("Content-Type", "application/json");
     headers.put("x-auth", token);
     String body = "{\n" +
-    " \"ShowMetadata\": true,\n" +
+            " \"ShowMetadata\": true,\n" +
             " \"RowsPerPage\": 50,\n" +
             " \"NumPage\": 10,\n" +
             " \"ListCols\": [\n" +
@@ -39,11 +39,12 @@ public class EudoNetAPI {
             "     {}\n" +
             "   ],\n" +
             "   \"Criteria\": {\n" +
-            "     \"Operator\": 0,\n" +
-            "     \"Field\": \"209\"\n" +
+            "     \"Operator\": 9,\n" +
+            "     \"Field\": \"209\",\n" +
+            "     \"Value\": \"1982\"\n" +
             "   },\n" +
-            "   \"InterOperator\": \"0\"\n" +
-            " }\n" +
+            "   \"InterOperator\": 0\n" +
+            " },\n" +
             "}";
     try {
       jsonResp = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", "200").headers(headers).body(body).asJson();
@@ -52,46 +53,4 @@ public class EudoNetAPI {
     }
     return jsonResp;
   }
-/*
-  public JSONObject getAllPersons() {
-    JSONObject response = new JSONObject();
-    try {
-      URL url = new URL("http://xrm3.eudonet.com/EudoAPI/Search/200");
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestProperty("Content-Type", "application/json");
-      connection.setRequestProperty("x-auth", token);
-      connection.setRequestMethod("POST");
-      connection.setDoOutput(true);
-      connection.setDoInput(true);
-      connection.setConnectTimeout(5000);
-      OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
-      String json = "{\n" +
-        " \"ShowMetadata\": true,\n" +
-                " \"RowsPerPage\": 50,\n" +
-                " \"NumPage\": 10,\n" +
-                " \"ListCols\": [\n" +
-                "   201, 202, 209\n" +
-                " ],\n" +
-                " \"WhereCustom\": {\n" +
-                "   \"WhereCustoms\": [\n" +
-                "     {}\n" +
-                "   ],\n" +
-                "   \"Criteria\": {\n" +
-                "     \"Operator\": 0,\n" +
-                "     \"Field\": \"209\"\n" +
-                "   },\n" +
-                "   \"InterOperator\": \"0\"\n" +
-                " }\n" +
-                "}";
-      osw.write(json);
-      System.out.println(json);
-      response = JsonHelper.readJsonInputStream(connection.getInputStream());
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return response;
-  }
-  */
 }
