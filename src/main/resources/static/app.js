@@ -5,7 +5,8 @@ var app = angular.module("MyApp", ['ngResource']);
 
 
 
-app.factory("Authentification", function($resource) {
+app.factory("Authentification", function($resource)
+{
     return $resource('http://xrm3.eudonet.com/EudoAPI/Authenticate/Token',
         {},
         {
@@ -18,19 +19,16 @@ app.factory("Authentification", function($resource) {
         }
     );
 });
-
-
-
 app.factory("listMetaTables", function($resource) {
     return $resource('http://xrm3.eudonet.com/EudoAPI/MetaInfos/ListTabs\\/'+'/', {}, {
 
         get: {
             method: 'GET',
-            headers: { 'x-auth': 'PiP+FkI9KeCxOedXRZfYm+SwaQsOkAmOEF7wHpD8VOm7T11R3J1+RibpwYyNDS' +
-            'qFJpKpsl9rHb4oS7FOymMvoTPwcM/or4pzeHIeR1ZHXbfBAwk9WbcdrTD+A9RgZ66bNflITsG' +
-            'mQuFAuvPO8TjUnop3u2dgdsHb9PVbrtCSFm3Mcz8UXq6Y41q1Lf5GyCJCZzG2i32RDDl2eZQC' +
-            'f9WvZFXMX9Up22hxb6j5eZPwRdVVvNOnoTG0MNOv7Bit/fSErwbHv8gMlDilMosisDmFR9cMn' +
-            'Q+zJ3dMnPzNUytcj3DQzy8WusNr/K7CB/MsOYu3TaOP/Zxn8rZIkIE/0wi3tXvwerxuvUsuQYoaZg==' }
+            headers: { 'x-auth': 'Ns76s0JCf6VPKt73aoLzwzboWI7ZPoxT8wzzsVO0DYJiHzli4DJUCpjGdk8jR0tcHJLA0S3JvfQUR+' +
+            'asiJo8Sl4Ux4MG8Um4KWuLQm8P8/RV266rrVL+KgU56XbMQLiWXFCHtkpUQlZxfFcqA' +
+            'BrPzbdBXOB1TAxhb0zafdtuHc2IytYpEegV/7zLr6dCjNLIScio4rIjACmZ4xKHWDOMO9' +
+            '/HpX8TCTlKIZD1Et3oH0x8dOOFo4QCadtK4dm2iwTZFziWaPiR7rI/+xEuZq1rz/dytiDrU' +
+            'pnfytaNv8YZo/BaVXOyyghIB1pYl2CS2MJw7TtMZDVf4X1J+MziS8cPsQ22+Ml3GC8JCnbCiA==' }
         }
     });
 });
@@ -47,7 +45,6 @@ app.factory("addDictionnary", function($resource) {
         }
     );
 });
-
 app.run(function (listMetaTables,addDictionnary,Authentification)
 {
     /*var header=({
@@ -59,12 +56,8 @@ app.run(function (listMetaTables,addDictionnary,Authentification)
         "UserLang": "lang_00",
         "ProductName": "TEST"
     });*/
-
-
-
     /*Authentification.save(header,function(data){
         console.log(data.ResultData.Token)
-
     })*/
     listMetaTables.get(function(data) {
 
@@ -80,12 +73,7 @@ app.run(function (listMetaTables,addDictionnary,Authentification)
             })
         });
     });
-
-
-
-
 });
-
 app.controller("HomeController", function($scope,listMetaTables) {
 
 

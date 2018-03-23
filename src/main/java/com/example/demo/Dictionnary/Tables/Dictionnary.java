@@ -1,8 +1,10 @@
-package com.example.demo;
+package com.example.demo.Dictionnary.Tables;
 
+import com.example.demo.Dictionnary.Colonnes.Definition;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by othmane on 18/03/2018.
@@ -17,6 +19,8 @@ public class Dictionnary {
     private String idTable;
     @Column(length = 50)
     private String tableName;
+    @OneToMany(mappedBy = "tableName", fetch = FetchType.LAZY)
+    private Collection<Definition> definitions;
 
     public Dictionnary(String idTable, String tableName) {
         this.idTable = idTable;
@@ -48,5 +52,13 @@ public class Dictionnary {
 @JsonSetter
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public Collection<Definition> getDefinitions() {
+        return definitions;
+    }
+
+    public void setDefinitions(Collection<Definition> definitions) {
+        this.definitions = definitions;
     }
 }

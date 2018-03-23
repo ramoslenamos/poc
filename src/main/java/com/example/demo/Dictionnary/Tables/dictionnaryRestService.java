@@ -1,6 +1,5 @@
-package com.example.demo;
+package com.example.demo.Dictionnary.Tables;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
