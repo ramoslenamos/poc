@@ -15,6 +15,12 @@ public class EudoNetAPI {
     this.connect();
   }
 
+  /**
+   * Obtenir la liste de toutes les personnes.
+   *
+   * @return la liste des personnes
+   * @throws UnirestException
+   */
   public JsonNode getAllPersons() throws UnirestException {
     JsonNode bodyResponse = new JsonNode("");
     HashMap<String, String> headers = new HashMap<>();
@@ -44,12 +50,17 @@ public class EudoNetAPI {
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", "200").headers(headers).body(body).asJson();
 
     bodyResponse = httpRep.getBody();
-    if(!this.renewToken(bodyResponse)){
+    if (!this.renewToken(bodyResponse)) {
       return bodyResponse;
     }
     return getAllPersons();
   }
 
+  /**
+   * Demander un token d'authentification.
+   *
+   * @throws UnirestException
+   */
   private void connect() throws UnirestException {
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
@@ -67,15 +78,25 @@ public class EudoNetAPI {
     this.token = httpRep.getBody().getObject().getString("token");
   }
 
-  private void disconnect(){
+  /**
+   * Se déconnecter de l'API (désactivation du token).
+   */
+  private void disconnect() {
     Unirest.delete("http://xrm3.eudonet.com/EudoAPI/Authenticate/Disconnect").header("x-auth", token);
   }
 
+  /**
+   * Renouvellement du token si celui-co n'est plus valide.
+   *
+   * @param response la réponse d'une requête
+   * @return vrai si le token a été renouvelé, false si le token est valide
+   * @throws UnirestException
+   */
   private boolean renewToken(JsonNode response) throws UnirestException {
     JSONObject resultInfos = response.getObject().getJSONObject("ResultInfos");
-    int nb = (int)resultInfos.getInt("ErrorNumber");
+    int nb = (int) resultInfos.getInt("ErrorNumber");
     System.out.println("ErrorNumber : " + nb);
-    if(nb == 103){
+    if (nb == 103) {
       this.connect();
       System.out.println("Token renouvelé");
       return true;
