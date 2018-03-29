@@ -7,10 +7,9 @@ import com.google.gson.annotations.SerializedName;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.io.Serializable;
 
 @Entity
-public class UserInfos implements Serializable {
+public class UserInfos {
   @Id
   @GeneratedValue
   public Long id;
