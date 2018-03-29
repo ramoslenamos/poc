@@ -5,4 +5,5 @@ package com.example.demo.Dictionnary.Tables;
  */
 public interface dictionnaryMetier {
     public Dictionnary addInfo(Dictionnary info);
+    public String labelToDescId(String label);
 }
