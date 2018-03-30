@@ -37,6 +37,11 @@ public class PersonMetierImp implements PersonMetier {
   }
 
   @Override
+  public JsonNode search(CustomSearch customSearch) throws UnirestException {
+    return eudoApi.search(200, customSearch);
+  }
+
+  @Override
   public JsonNode getContactsDirection() {
     return null;
   }
