@@ -18,4 +18,10 @@ public class dictionnaryMetierImpl implements dictionnaryMetier {
         System.out.println("sALUUT");
         return dictionnaryRepository.saveAndFlush(info);
     }
+
+    @Override
+    public String labelToDescId(String label) {
+        Dictionnary dictionnary = dictionnaryRepository.findByTableName(label);
+        return dictionnary.getIdTable();
+    }
 }
