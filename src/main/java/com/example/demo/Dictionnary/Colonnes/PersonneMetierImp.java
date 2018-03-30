@@ -6,21 +6,21 @@ import com.example.demo.EudoNet.JsonEntities.Criteria;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.OrderBy;
 import com.example.demo.EudoNet.JsonEntities.WhereCustom;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonMetierImp implements PersonMetier {
+public class PersonneMetierImp implements PersonneMetier{
   @Autowired
-  private EudoNetAPI eudoApi;
+  EudoNetAPI eudoNetAPI;
   @Autowired
-  private dictionnaryMetier dictionnaryMetier;
+  dictionnaryMetier dictionnaryMetier;
 
   @Override
-  public JsonNode getAll(String type) throws UnirestException {
+  public JSONObject getAll(String type) throws UnirestException {
     String descId = this.labelToDescId(type);
     List<Integer> listCols = new ArrayList<>();
     listCols.add(201);// nom
@@ -33,47 +33,28 @@ public class PersonMetierImp implements PersonMetier {
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoApi.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy));
+    return eudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
-  public JsonNode search(CustomSearch customSearch) throws UnirestException {
-    return eudoApi.search(200, customSearch);
+  public JSONObject getOldTrainees(String organisation) throws UnirestException {
+    List<Integer> listCols = new ArrayList<>();
+    listCols.add(201);// nom
+    listCols.add(202);// prénom
+    listCols.add(204);// civilité
+    Criteria criteria = new Criteria("301", 9, organisation);
+    List<WhereCustom> whereCustoms = new ArrayList<>();
+    whereCustoms.add(new WhereCustom());
+    WhereCustom whereCustom = new WhereCustom(whereCustoms, criteria, 0);
+    List<OrderBy> orderBy = new ArrayList<>();
+    orderBy.add(new OrderBy(201, 0));
+
+    return eudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
-  public JsonNode getContactsDirection() {
-    return null;
-  }
-
-  @Override
-  public JsonNode getContactsOperationnel() {
-    return null;
-  }
-
-  @Override
-  public JsonNode getContactsRH() {
-    return null;
-  }
-
-  @Override
-  public JsonNode getStudents() {
-    return null;
-  }
-
-  @Override
-  public JsonNode getDiplomes() {
-    return null;
-  }
-
-  @Override
-  public JsonNode getInscrits() {
-    return null;
-  }
-
-  @Override
-  public JsonNode getProfs() {
-    return null;
+  public JSONObject search(CustomSearch customSearch) throws UnirestException {
+    return eudoNetAPI.search(200, customSearch).getObject();
   }
 
   private String labelToDescId(String label){

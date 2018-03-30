@@ -7,15 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/person")
-public class PersonRestService {
+@RequestMapping("api/personne")
+public class PersonneRestService {
   @Autowired
-  PersonMetier personMetier;
+  PersonneMetier personneMetier;
 
-  @GetMapping("/all/{type}")
+  @GetMapping("/{type}")
   public JSONObject getAll(@PathVariable("type") String type){
     try {
-      return personMetier.getAll(type).getObject();
+      return personneMetier.getAll(type);
+    } catch (UnirestException e) {
+      return new JSONObject(e.getMessage());
+    }
+  }
+
+  @GetMapping("/stagiaire/{organisation}")
+  public JSONObject getOldTrainees(@PathVariable("organisation") String organisation){
+    try {
+      return personneMetier.getOldTrainees(organisation);
     } catch (UnirestException e) {
       return new JSONObject(e.getMessage());
     }
@@ -24,9 +33,10 @@ public class PersonRestService {
   @RequestMapping(value = "/search", method = RequestMethod.POST)
   public JSONObject search(@RequestBody CustomSearch customSearch){
     try {
-      return personMetier.search(customSearch).getObject();
+      return personneMetier.search(customSearch);
     } catch (UnirestException e) {
       return new JSONObject(e.getMessage());
     }
   }
+
 }
