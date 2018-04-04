@@ -6,11 +6,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 @RequestMapping("api/personne")
 public class PersonneRestService {
   @Autowired
-  PersonneMetier personneMetier;
+  private PersonneMetier personneMetier;
 
   @GetMapping("/{type}")
   public JSONObject getAll(@PathVariable("type") String type){

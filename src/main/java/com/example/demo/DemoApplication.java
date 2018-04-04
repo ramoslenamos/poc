@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.Dictionnary.Tables.UserRepository;
-import com.example.demo.EudoNet.EudoNetAPI;
+import com.example.demo.EudoNet.EudoApiImp;
 import com.example.demo.EudoNet.JsonEntities.*;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class DemoApplication implements CommandLineRunner {
   public void run(String... args) throws Exception {
     UserInfos userInfos = userRepository.findOneById(new Long(1));
     try {
-      EudoNetAPI api = new EudoNetAPI(userInfos);
+      EudoApiImp api = new EudoApiImp(userInfos);
       // Recherche des étudiants
       System.out.println(api.search(200, buildStudentsSearch()).toString());
     } catch (UnirestException e) {

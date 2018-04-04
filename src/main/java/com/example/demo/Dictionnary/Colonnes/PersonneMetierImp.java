@@ -1,7 +1,7 @@
 package com.example.demo.Dictionnary.Colonnes;
 
 import com.example.demo.Dictionnary.Tables.dictionnaryMetier;
-import com.example.demo.EudoNet.EudoNetAPI;
+import com.example.demo.EudoNet.EudoApi;
 import com.example.demo.EudoNet.JsonEntities.Criteria;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.OrderBy;
@@ -15,9 +15,9 @@ import java.util.List;
 
 public class PersonneMetierImp implements PersonneMetier{
   @Autowired
-  EudoNetAPI eudoNetAPI;
+  private EudoApi eudoAPI;
   @Autowired
-  dictionnaryMetier dictionnaryMetier;
+  private dictionnaryMetier dictionnaryMetier;
 
   @Override
   public JSONObject getAll(String type) throws UnirestException {
@@ -33,7 +33,7 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
+    return eudoAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
@@ -49,12 +49,12 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
+    return eudoAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
   public JSONObject search(CustomSearch customSearch) throws UnirestException {
-    return eudoNetAPI.search(200, customSearch).getObject();
+    return eudoAPI.search(200, customSearch).getObject();
   }
 
   private String labelToDescId(String label){

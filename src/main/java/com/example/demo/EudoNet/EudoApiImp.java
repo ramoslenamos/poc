@@ -11,11 +11,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class EudoNetAPI {
+public class EudoApiImp implements EudoApi {
   String token;
   UserInfos userInfos;
 
-  public EudoNetAPI(UserInfos userInfos) throws UnirestException {
+  public EudoApiImp(UserInfos userInfos) throws UnirestException {
     this.userInfos = userInfos;
     //this.connect();
     this.token = "fCyatI/C+7GJGmLrZ1IrGi4J6fA6z21LjIEmpuS4lJN0r6O+bs8TUTSCH6kbsxKjqAFE7EmhrU9eg2jRuy086sQYyJMlJusrUwgXZjNy6GKkEyzVOHR4i381jM6Ah7qNtWCO7NB2qYR9GduuzmH3t4wt2d2m6JSoTpv0E4Rmp9RAQMhm2kKwePTTNX70RK+YOoslw+3DLJlXAyNzz/Cd+Yomtm2Fgoo2EMF+dD1NlJqYzTLgFm8MEvGsOdV9f1wri4RFQwfaL/h1lX++82h/OWcV9wA1FUpxd4bYUKHHy12f8TeY3gXUw7ecKy2rArXWp2jMCiAp88gx5V4sE4k3Vu6EGcTuqjfwnYrZyQ==";
