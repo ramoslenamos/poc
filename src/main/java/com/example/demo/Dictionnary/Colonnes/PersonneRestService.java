@@ -38,5 +38,4 @@ public class PersonneRestService {
       return new JSONObject(e.getMessage());
     }
   }
-
 }
