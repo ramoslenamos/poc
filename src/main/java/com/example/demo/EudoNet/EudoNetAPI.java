@@ -78,7 +78,7 @@ public class EudoNetAPI {
     JSONObject resultInfos = response.getObject().getJSONObject("ResultInfos");
     int nb = (int) resultInfos.getInt("ErrorNumber");
     System.out.println("ErrorNumber : " + nb);
-    if (nb == 103) { // error 103 : token invalide
+    if (nb == 103 || nb == 103) { // error 103 : token invalide ou introuvable
       connect();
       System.out.println("Token renouvelé");
       return true;
@@ -87,13 +87,13 @@ public class EudoNetAPI {
     return false;
   }
 
-  private static String getToken(){
+  private static String getToken() {
     Properties prop = new Properties();
     InputStream input = null;
     String token = null;
     try {
-
-      input = new FileInputStream("config.properties");
+      File conf = new File("config.properties");
+      input = new FileInputStream(conf);
 
       // load a properties file
       prop.load(input);
@@ -115,13 +115,13 @@ public class EudoNetAPI {
     return token;
   }
 
-  private static void setToken(String token){
+  private static void setToken(String token) {
     Properties prop = new Properties();
     OutputStream output = null;
 
     try {
-
-      output = new FileOutputStream("config.properties");
+      File conf = new File("config.properties");
+      output = new FileOutputStream(conf);
 
       // set the properties value
       prop.setProperty("token", token);
