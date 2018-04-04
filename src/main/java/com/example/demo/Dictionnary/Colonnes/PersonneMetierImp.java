@@ -1,23 +1,23 @@
 package com.example.demo.Dictionnary.Colonnes;
 
+import com.example.demo.Dictionnary.Tables.UserRepository;
 import com.example.demo.Dictionnary.Tables.dictionnaryMetier;
-import com.example.demo.EudoNet.EudoApi;
-import com.example.demo.EudoNet.JsonEntities.Criteria;
-import com.example.demo.EudoNet.JsonEntities.CustomSearch;
-import com.example.demo.EudoNet.JsonEntities.OrderBy;
-import com.example.demo.EudoNet.JsonEntities.WhereCustom;
+import com.example.demo.EudoNet.EudoNetAPI;
+import com.example.demo.EudoNet.JsonEntities.*;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PersonneMetierImp implements PersonneMetier{
   @Autowired
-  private EudoApi eudoAPI;
-  @Autowired
   private dictionnaryMetier dictionnaryMetier;
+  @Autowired
+  private UserRepository userRepository;
 
   @Override
   public JSONObject getAll(String type) throws UnirestException {
@@ -33,7 +33,7 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
+    return EudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
@@ -49,12 +49,12 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
+    return EudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
   public JSONObject search(CustomSearch customSearch) throws UnirestException {
-    return eudoAPI.search(200, customSearch).getObject();
+    return EudoNetAPI.search(200, customSearch).getObject();
   }
 
   private String labelToDescId(String label){
