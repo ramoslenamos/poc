@@ -92,8 +92,8 @@ public class EudoNetAPI {
     InputStream input = null;
     String token = null;
     try {
-      File conf = new File("config.properties");
-      input = new FileInputStream(conf);
+
+      input = new FileInputStream("src/main/resources/config.properties");
 
       // load a properties file
       prop.load(input);
@@ -120,8 +120,8 @@ public class EudoNetAPI {
     OutputStream output = null;
 
     try {
-      File conf = new File("config.properties");
-      output = new FileOutputStream(conf);
+
+      output = new FileOutputStream("src/main/resources/config.properties");
 
       // set the properties value
       prop.setProperty("token", token);
