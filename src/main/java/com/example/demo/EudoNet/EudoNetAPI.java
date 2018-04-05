@@ -1,6 +1,10 @@
 package com.example.demo.EudoNet;
 
+import com.example.demo.Dictionnary.Colonnes.Definition;
+import com.example.demo.Dictionnary.Colonnes.DefinitionMetier;
+import com.example.demo.Dictionnary.Tables.Dictionnary;
 import com.example.demo.Dictionnary.Tables.UserRepository;
+import com.example.demo.Dictionnary.Tables.DictionnaryMetier;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.UserInfos;
 import com.google.gson.GsonBuilder;
@@ -8,12 +12,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 @Service
@@ -143,5 +149,73 @@ public class EudoNetAPI {
         }
       }
     }
+  }
+
+  public void getListTables(DictionnaryMetier d) throws UnirestException {
+
+    JsonNode bodyResponse = new JsonNode("");
+    HashMap<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("Content-Type", "application/json");
+    headers.put("x-auth", getToken());
+    HttpResponse<JsonNode> httpRep = Unirest.get("http://xrm3.eudonet.com/EudoAPI/MetaInfos/ListTabs/").headers(headers).asJson();
+
+    //if (!this.renewToken(bodyResponse)) {
+    // return bodyResponse;
+    //}
+
+    JSONArray tables=httpRep.getBody().getObject().getJSONObject("ResultMetaData").getJSONArray("Tables");
+    for (int i = 0 ; i < tables.length(); i++) {
+      JSONObject obj = tables.getJSONObject(i);
+      int A = obj.getInt("Descid");
+      String idTable=String.valueOf(A);
+      String tableName = obj.getString("Label");
+      Dictionnary dictionnary=new Dictionnary();
+      dictionnary.setIdTable(idTable);
+      dictionnary.setTableName(tableName);
+      d.addInfo(dictionnary);
+    }
+
+  }
+
+  public void getListTablesDetails(DictionnaryMetier DictionnaryMetier, DefinitionMetier definitionMetier) throws UnirestException {
+
+    HashMap<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("Content-Type", "application/json");
+    headers.put("x-auth", getToken());
+    List<Dictionnary> dictionnaries= DictionnaryMetier.getAllTables();
+    for (Dictionnary dictionnary : dictionnaries) {
+      int[] fields = {0};
+      JSONObject[] jsonObjects=new JSONObject[1];
+      jsonObjects[0]=
+              new JSONObject().put("DescId", dictionnary.getIdTable()).put("AllFields",true).put("Fields",fields);
+
+
+      String jsonString = new JSONObject()
+              .put("Tables", jsonObjects).toString();
+
+      HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/MetaInfos/").
+              headers(headers).body(jsonString).asJson();
+
+      JSONArray tables=httpRep.getBody().getObject().getJSONObject("ResultMetaData").getJSONArray("Tables");
+
+      JSONArray jsonArray=tables.getJSONObject(0).getJSONArray("Fields");
+
+      for (int i = 0 ; i < jsonArray.length(); i++) {
+        JSONObject obj = jsonArray.getJSONObject(i);
+        int A = obj.getInt("DescId");
+        String idColumn=String.valueOf(A);
+        String labelName = obj.getString("Label");
+
+        Definition definition=new Definition();
+        definition.setIdColoumn(idColumn);
+        definition.setLabel(labelName);
+        definition.setTableName(dictionnary);
+        definitionMetier.addInfo(definition);
+      }
+
+    }
+
   }
 }

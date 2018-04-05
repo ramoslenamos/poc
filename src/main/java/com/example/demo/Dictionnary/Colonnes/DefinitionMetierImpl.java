@@ -1,11 +1,12 @@
 package com.example.demo.Dictionnary.Colonnes;
 
-import com.example.demo.Dictionnary.Tables.dictionnaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by othmane on 23/03/2018.
  */
+@Service
 public class DefinitionMetierImpl implements  DefinitionMetier{
     @Autowired
     private DefinitionRepository definitionRepository;

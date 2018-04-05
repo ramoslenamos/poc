@@ -22,6 +22,10 @@ public class Definition implements Serializable {
     @Column(length = 50)
     private String label;
 
+    public Definition() {
+
+    }
+
     public Definition(String idColoumn, Dictionnary tableName, String label) {
         this.idColoumn = idColoumn;
         this.tableName = tableName;
