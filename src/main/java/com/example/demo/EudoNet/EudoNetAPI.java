@@ -48,7 +48,7 @@ public class EudoNetAPI {
    *
    * @throws UnirestException
    */
-  private static void connect() throws UnirestException {
+  public static void connect() throws UnirestException {
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
     headers.put("Content-Type", "application/json");
@@ -138,7 +138,6 @@ public class EudoNetAPI {
           e.printStackTrace();
         }
       }
-
     }
   }
 }
