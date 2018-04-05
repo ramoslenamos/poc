@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by othmane on 19/03/2018.
  */
 @RestController
-public class dictionnaryRestService {
+public class DictionnaryRestService {
     @Autowired
-    private dictionnaryMetier dictionnaryMetier;
+    private DictionnaryMetier dictionnaryMetier;
 
     @RequestMapping(value="/addDictionnary",method= RequestMethod.POST)
     public Dictionnary addInfo(@RequestBody Dictionnary info)

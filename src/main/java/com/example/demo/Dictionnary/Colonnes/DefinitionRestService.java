@@ -1,7 +1,5 @@
 package com.example.demo.Dictionnary.Colonnes;
 
-import com.example.demo.Dictionnary.Tables.Dictionnary;
-import com.example.demo.Dictionnary.Tables.dictionnaryMetier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

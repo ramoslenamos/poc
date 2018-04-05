@@ -3,13 +3,15 @@ package com.example.demo.Dictionnary.Tables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by othmane on 19/03/2018.
  */
 @Service
-public class dictionnaryMetierImpl implements dictionnaryMetier {
+public class DictionnaryMetierImpl implements DictionnaryMetier {
     @Autowired
-    private dictionnaryRepository dictionnaryRepository;
+    private DictionnaryRepository dictionnaryRepository;
 
     @Override
     public Dictionnary addInfo(Dictionnary info) {
@@ -23,5 +25,10 @@ public class dictionnaryMetierImpl implements dictionnaryMetier {
     public String labelToDescId(String label) {
         Dictionnary dictionnary = dictionnaryRepository.findByTableName(label);
         return dictionnary.getIdTable();
+    }
+
+    @Override
+    public List<Dictionnary> getAllTables() {
+        return dictionnaryRepository.findAll();
     }
 }
