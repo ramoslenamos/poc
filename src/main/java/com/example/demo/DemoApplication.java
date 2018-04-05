@@ -10,17 +10,20 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication implements CommandLineRunner {
+public class DemoApplication /*implements CommandLineRunner*/ {
+  /*
   @Autowired
   UserRepository userRepository;
+  */
 
   public static void main(String[] args) {
     SpringApplication.run(DemoApplication.class, args);
   }
-
+/*
   @Override
   public void run(String... args) throws Exception {
     UserInfos userInfos = userRepository.findOneById(new Long(1));
     System.out.println("USER : " + userInfos.getUserLogin());
   }
+  */
 }

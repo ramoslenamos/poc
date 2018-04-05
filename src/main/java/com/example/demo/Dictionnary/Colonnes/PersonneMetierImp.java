@@ -17,7 +17,7 @@ public class PersonneMetierImp implements PersonneMetier{
   @Autowired
   private dictionnaryMetier dictionnaryMetier;
   @Autowired
-  private UserRepository userRepository;
+  private EudoNetAPI eudoNetAPI;
 
   @Override
   public JSONObject getAll(String type) throws UnirestException {
@@ -33,7 +33,7 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return EudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
+    return eudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
@@ -49,12 +49,12 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return EudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
+    return eudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getObject();
   }
 
   @Override
   public JSONObject search(CustomSearch customSearch) throws UnirestException {
-    return EudoNetAPI.search(200, customSearch).getObject();
+    return eudoNetAPI.search(200, customSearch).getObject();
   }
 
   private String labelToDescId(String label){

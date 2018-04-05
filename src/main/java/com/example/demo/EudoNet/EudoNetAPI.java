@@ -10,14 +10,16 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Properties;
 
+@Service
 public class EudoNetAPI {
   @Autowired
-  private static UserRepository userRepository;
+  private UserRepository userRepository;
 
   /**
    * Lance une recherche avancée à partir de critères de recherche complexe.
@@ -27,7 +29,7 @@ public class EudoNetAPI {
    * @return le résultat de la recherche si token valide, ou appel récursif après renouvellement du token.
    * @throws UnirestException
    */
-  public static JsonNode search(int descId, CustomSearch customSearch) throws UnirestException {
+  public JsonNode search(int descId, CustomSearch customSearch) throws UnirestException {
     JsonNode bodyResponse = new JsonNode("");
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
@@ -48,22 +50,24 @@ public class EudoNetAPI {
    *
    * @throws UnirestException
    */
-  public static void connect() throws UnirestException {
+  public void connect() throws UnirestException {
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
     headers.put("Content-Type", "application/json");
     UserInfos userInfos = userRepository.findOneById(new Long(1));
+    System.out.println("USER_LOGIN : " + userInfos.getUserLogin());
     String body = new GsonBuilder().create().toJson(userInfos, UserInfos.class);
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Authenticate/Token").headers(headers).body(body).asJson();
     // Récupération du token
     String token = httpRep.getBody().getObject().getJSONObject("ResultData").getString("Token");
-    setToken(token);
+    System.out.println("TOKEN : " + token);
+    this.setToken(token);
   }
 
   /**
    * Se déconnecter de l'API (désactivation du token).
    */
-  public static void disconnect() {
+  public void disconnect() {
     Unirest.delete("http://xrm3.eudonet.com/EudoAPI/Authenticate/Disconnect").header("x-auth", getToken());
   }
 
@@ -74,7 +78,7 @@ public class EudoNetAPI {
    * @return vrai si le token a été renouvelé, false si le token est valide
    * @throws UnirestException
    */
-  private static boolean renewToken(JsonNode response) throws UnirestException {
+  private boolean renewToken(JsonNode response) throws UnirestException {
     JSONObject resultInfos = response.getObject().getJSONObject("ResultInfos");
     int nb = (int) resultInfos.getInt("ErrorNumber");
     System.out.println("ErrorNumber : " + nb);
@@ -87,7 +91,7 @@ public class EudoNetAPI {
     return false;
   }
 
-  private static String getToken() {
+  private String getToken() {
     Properties prop = new Properties();
     InputStream input = null;
     String token = null;
@@ -115,7 +119,7 @@ public class EudoNetAPI {
     return token;
   }
 
-  private static void setToken(String token) {
+  private void setToken(String token) {
     Properties prop = new Properties();
     OutputStream output = null;
 
