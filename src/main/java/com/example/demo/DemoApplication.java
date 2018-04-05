@@ -27,6 +27,7 @@ public class DemoApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
+    /*
     try {
       EudoNetAPI api = new EudoNetAPI();
       definitionMetier.DeleteAll();
@@ -36,7 +37,6 @@ public class DemoApplication implements CommandLineRunner {
 
     } catch (UnirestException e) {
       e.printStackTrace();
-    }
+    }*/
   }
-
 }

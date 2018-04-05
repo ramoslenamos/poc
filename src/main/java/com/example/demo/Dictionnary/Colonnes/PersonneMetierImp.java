@@ -3,6 +3,7 @@ package com.example.demo.Dictionnary.Colonnes;
 import com.example.demo.Dictionnary.Tables.DictionnaryMetier;
 import com.example.demo.EudoNet.EudoNetAPI;
 import com.example.demo.EudoNet.JsonEntities.*;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class PersonneMetierImp implements PersonneMetier{
   private EudoNetAPI eudoNetAPI;
 
   @Override
-  public JSONArray getAll(String type) throws UnirestException {
+  public JsonNode getAll(String type) throws UnirestException {
     String descId = this.labelToDescId(type);
     List<Integer> listCols = new ArrayList<>();
     listCols.add(201);// nom
@@ -32,11 +33,11 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getArray();
+    return eudoNetAPI.search(200, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy));
   }
 
   @Override
-  public JSONArray getOldTrainees(String organisation) throws UnirestException {
+  public JsonNode getOldTrainees(String organisation) throws UnirestException {
     List<Integer> listCols = new ArrayList<>();
     listCols.add(201);// nom
     listCols.add(202);// prénom
@@ -48,12 +49,12 @@ public class PersonneMetierImp implements PersonneMetier{
     List<OrderBy> orderBy = new ArrayList<>();
     orderBy.add(new OrderBy(201, 0));
 
-    return eudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy)).getArray();
+    return eudoNetAPI.search(2400, new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy));
   }
 
   @Override
-  public JSONArray search(CustomSearch customSearch) throws UnirestException {
-    return eudoNetAPI.search(200, customSearch).getArray();
+  public JsonNode search(CustomSearch customSearch) throws UnirestException {
+    return eudoNetAPI.search(200, customSearch);
   }
 
   private String labelToDescId(String label){
