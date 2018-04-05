@@ -1,5 +1,6 @@
 package com.example.demo.EudoNet;
 
+import com.example.demo.Dictionnary.Tables.UserRepository;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.UserInfos;
 import com.google.gson.GsonBuilder;
@@ -8,18 +9,17 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.HashMap;
+import java.util.Properties;
 
+@Service
 public class EudoNetAPI {
-  String token;
-  UserInfos userInfos;
-
-  public EudoNetAPI(UserInfos userInfos) throws UnirestException {
-    this.userInfos = userInfos;
-    //this.connect();
-    this.token = "fCyatI/C+7GJGmLrZ1IrGi4J6fA6z21LjIEmpuS4lJN0r6O+bs8TUTSCH6kbsxKjqAFE7EmhrU9eg2jRuy086sQYyJMlJusrUwgXZjNy6GKkEyzVOHR4i381jM6Ah7qNtWCO7NB2qYR9GduuzmH3t4wt2d2m6JSoTpv0E4Rmp9RAQMhm2kKwePTTNX70RK+YOoslw+3DLJlXAyNzz/Cd+Yomtm2Fgoo2EMF+dD1NlJqYzTLgFm8MEvGsOdV9f1wri4RFQwfaL/h1lX++82h/OWcV9wA1FUpxd4bYUKHHy12f8TeY3gXUw7ecKy2rArXWp2jMCiAp88gx5V4sE4k3Vu6EGcTuqjfwnYrZyQ==";
-  }
+  @Autowired
+  private UserRepository userRepository;
 
   /**
    * Lance une recherche avancée à partir de critères de recherche complexe.
@@ -34,12 +34,12 @@ public class EudoNetAPI {
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
     headers.put("Content-Type", "application/json");
-    headers.put("x-auth", token);
+    headers.put("x-auth", getToken());
     String body = new GsonBuilder().create().toJson(customSearch, CustomSearch.class);
 
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", "200").headers(headers).body(body).asJson();
     bodyResponse = httpRep.getBody();
-    if (!this.renewToken(bodyResponse)) {
+    if (!renewToken(bodyResponse)) {
       return bodyResponse;
     }
     return search(descId, customSearch);
@@ -50,21 +50,25 @@ public class EudoNetAPI {
    *
    * @throws UnirestException
    */
-  private void connect() throws UnirestException {
+  public void connect() throws UnirestException {
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
     headers.put("Content-Type", "application/json");
+    UserInfos userInfos = userRepository.findOneById(new Long(1));
+    System.out.println("USER_LOGIN : " + userInfos.getUserLogin());
     String body = new GsonBuilder().create().toJson(userInfos, UserInfos.class);
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Authenticate/Token").headers(headers).body(body).asJson();
     // Récupération du token
-    this.token = httpRep.getBody().getObject().getJSONObject("ResultData").getString("Token");
+    String token = httpRep.getBody().getObject().getJSONObject("ResultData").getString("Token");
+    System.out.println("TOKEN : " + token);
+    this.setToken(token);
   }
 
   /**
    * Se déconnecter de l'API (désactivation du token).
    */
   public void disconnect() {
-    Unirest.delete("http://xrm3.eudonet.com/EudoAPI/Authenticate/Disconnect").header("x-auth", token);
+    Unirest.delete("http://xrm3.eudonet.com/EudoAPI/Authenticate/Disconnect").header("x-auth", getToken());
   }
 
   /**
@@ -78,12 +82,66 @@ public class EudoNetAPI {
     JSONObject resultInfos = response.getObject().getJSONObject("ResultInfos");
     int nb = (int) resultInfos.getInt("ErrorNumber");
     System.out.println("ErrorNumber : " + nb);
-    if (nb == 103) { // error 103 : token invalide
-      this.connect();
+    if (nb == 103 || nb == 103) { // error 103 : token invalide ou introuvable
+      connect();
       System.out.println("Token renouvelé");
       return true;
     }
     System.out.println("Token valide");
     return false;
+  }
+
+  private String getToken() {
+    Properties prop = new Properties();
+    InputStream input = null;
+    String token = null;
+    try {
+
+      input = new FileInputStream("src/main/resources/config.properties");
+
+      // load a properties file
+      prop.load(input);
+
+      // get the property value and print it out
+      token = prop.getProperty("token");
+
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if (input != null) {
+        try {
+          input.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    return token;
+  }
+
+  private void setToken(String token) {
+    Properties prop = new Properties();
+    OutputStream output = null;
+
+    try {
+
+      output = new FileOutputStream("src/main/resources/config.properties");
+
+      // set the properties value
+      prop.setProperty("token", token);
+      // save properties to project root folder
+      prop.store(output, null);
+
+    } catch (IOException io) {
+      io.printStackTrace();
+    } finally {
+      if (output != null) {
+        try {
+          output.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 }

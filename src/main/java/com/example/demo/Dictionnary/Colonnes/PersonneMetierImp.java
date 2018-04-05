@@ -1,23 +1,23 @@
 package com.example.demo.Dictionnary.Colonnes;
 
+import com.example.demo.Dictionnary.Tables.UserRepository;
 import com.example.demo.Dictionnary.Tables.dictionnaryMetier;
 import com.example.demo.EudoNet.EudoNetAPI;
-import com.example.demo.EudoNet.JsonEntities.Criteria;
-import com.example.demo.EudoNet.JsonEntities.CustomSearch;
-import com.example.demo.EudoNet.JsonEntities.OrderBy;
-import com.example.demo.EudoNet.JsonEntities.WhereCustom;
+import com.example.demo.EudoNet.JsonEntities.*;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PersonneMetierImp implements PersonneMetier{
   @Autowired
-  EudoNetAPI eudoNetAPI;
+  private dictionnaryMetier dictionnaryMetier;
   @Autowired
-  dictionnaryMetier dictionnaryMetier;
+  private EudoNetAPI eudoNetAPI;
 
   @Override
   public JSONObject getAll(String type) throws UnirestException {
