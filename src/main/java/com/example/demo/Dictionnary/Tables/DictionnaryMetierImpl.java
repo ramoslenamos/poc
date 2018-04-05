@@ -31,4 +31,9 @@ public class DictionnaryMetierImpl implements DictionnaryMetier {
     public List<Dictionnary> getAllTables() {
         return dictionnaryRepository.findAll();
     }
+
+    @Override
+    public void DeleteAll() {
+        dictionnaryRepository.deleteAll();
+    }
 }

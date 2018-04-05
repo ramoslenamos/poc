@@ -16,4 +16,9 @@ public class DefinitionMetierImpl implements  DefinitionMetier{
 
         return definitionRepository.saveAndFlush(info);
     }
+
+    @Override
+    public void DeleteAll() {
+        definitionRepository.deleteAll();
+    }
 }

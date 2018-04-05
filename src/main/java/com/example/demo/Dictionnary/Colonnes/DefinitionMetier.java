@@ -7,4 +7,5 @@ import com.example.demo.Dictionnary.Tables.Dictionnary;
  */
 public interface DefinitionMetier {
     public Definition addInfo(Definition info);
+    public void DeleteAll();
 }

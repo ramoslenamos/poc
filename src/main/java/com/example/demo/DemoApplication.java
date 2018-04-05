@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.Dictionnary.Colonnes.DefinitionMetier;
+import com.example.demo.Dictionnary.Tables.Dictionnary;
 import com.example.demo.Dictionnary.Tables.UserRepository;
 import com.example.demo.Dictionnary.Tables.DictionnaryMetier;
 import com.example.demo.EudoNet.EudoNetAPI;
@@ -28,6 +29,8 @@ public class DemoApplication implements CommandLineRunner {
   public void run(String... args) throws Exception {
     try {
       EudoNetAPI api = new EudoNetAPI();
+      definitionMetier.DeleteAll();
+      DictionnaryMetier.DeleteAll();
       api.getListTables(DictionnaryMetier);
       api.getListTablesDetails(DictionnaryMetier,definitionMetier);
 

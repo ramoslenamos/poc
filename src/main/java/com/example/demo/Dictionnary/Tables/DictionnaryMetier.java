@@ -9,4 +9,5 @@ public interface DictionnaryMetier {
     public Dictionnary addInfo(Dictionnary info);
     public String labelToDescId(String label);
     public List<Dictionnary> getAllTables();
+    public void DeleteAll();
 }
