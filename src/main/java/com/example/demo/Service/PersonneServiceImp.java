@@ -43,8 +43,7 @@ public class PersonneServiceImp implements PersonneService {
   public JSONObject getAll(String typePersonne, List<String> colLabels) throws UnirestException {
     JSONObject response = new JSONObject();
 
-    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personne");
-
+    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
     Map<String, String> map = new HashMap<>();
     for (String col : colLabels) {
       String id = defintitionMetier.labelToDescId(col, personDic);
