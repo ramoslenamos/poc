@@ -19,7 +19,7 @@ public class CustomSearch {
   public Integer numPage;
   @SerializedName("ListCols")
   @Expose
-  public List<Integer> listCols = null;
+  public List<String> listCols = null;
   @SerializedName("WhereCustom")
   @Expose
   public WhereCustom whereCustom;
@@ -43,7 +43,7 @@ public class CustomSearch {
    * @param listCols     Liste des descId des champs souhaités
    * @param showMetadata Fournir 'true' pour obtenir les méta-datas des champs et tables demandés
    */
-  public CustomSearch(Boolean showMetadata, Integer rowsPerPage, Integer numPage, List<Integer> listCols, WhereCustom whereCustom, List<OrderBy> orderBy) {
+  public CustomSearch(Boolean showMetadata, Integer rowsPerPage, Integer numPage, List<String> listCols, WhereCustom whereCustom, List<OrderBy> orderBy) {
     super();
     this.showMetadata = showMetadata;
     this.rowsPerPage = rowsPerPage;

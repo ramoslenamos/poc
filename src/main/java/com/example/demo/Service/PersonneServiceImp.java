@@ -11,11 +11,15 @@ import com.example.demo.EudoNet.JsonEntities.OrderBy;
 import com.example.demo.EudoNet.JsonEntities.WhereCustom;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PersonneServiceImp implements PersonneService {
@@ -36,10 +40,16 @@ public class PersonneServiceImp implements PersonneService {
    * @throws UnirestException
    */
   @Override
-  public JsonNode getAll(String typePersonne) throws UnirestException {
-    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personne");
-    List<Integer> listCols = new ArrayList<>();
+  public JSONObject getAll(String typePersonne, List<String> colLabels) throws UnirestException {
+    JSONObject response = new JSONObject();
 
+    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personne");
+
+    Map<String, String> map = new HashMap<>();
+    for (String col : colLabels) {
+      String id = defintitionMetier.labelToDescId(col, personDic);
+      map.put(id, col);
+    }
     Criteria criteria = new Criteria(defintitionMetier.labelToDescId("Type", personDic), 9, catalogueMetier.labelToDescId(typePersonne));
     List<WhereCustom> whereCustoms = new ArrayList<>();
     whereCustoms.add(new WhereCustom());
@@ -47,7 +57,20 @@ public class PersonneServiceImp implements PersonneService {
     List<OrderBy> orderBy = new ArrayList<>();
     //orderBy.add(new OrderBy(201, 0));
 
-    return eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy));
+    JSONArray personsEudo = eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.values()), whereCustom, orderBy)).getObject().getJSONArray("rows");
+    JSONArray personnnes = new JSONArray();
+    for (int i = 0; i < personsEudo.length(); i++) {
+      JSONArray champs = personsEudo.getJSONArray(i);
+      JSONObject personne = new JSONObject();
+      for (int j = 0; j < champs.length(); i++) {
+        JSONObject champ = champs.getJSONObject(i);
+        personne.put(map.get(champ.getString("DescId")), champ.getString("Value"));
+      }
+      personnnes.put(personne);
+    }
+    response.put("personnes", personnnes);
+
+    return response;
   }
 
   /**
@@ -57,6 +80,7 @@ public class PersonneServiceImp implements PersonneService {
    * @return la liste des anciens stagiaire de l'organisation
    * @throws UnirestException
    */
+  /*
   @Override
   public JsonNode getOldTrainees(String organisation) throws UnirestException {
     List<Integer> listCols = new ArrayList<>();
@@ -68,11 +92,12 @@ public class PersonneServiceImp implements PersonneService {
     //orderBy.add(new OrderBy(201, 0));
 
     return eudoNetAPI.search("2400", new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy));
-  }
+  }*/
 
 
   /**
    * Recherche avancée en utilisant les critères de recherche Eudonet.
+   *
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères
    * @throws UnirestException

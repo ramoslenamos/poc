@@ -32,6 +32,7 @@ public class DemoApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
+    /*
     try {
       definitionMetier.DeleteAll();
       dictionnaryMetier.DeleteAll();
@@ -43,6 +44,6 @@ public class DemoApplication implements CommandLineRunner {
       eudoNetAPI.disconnect();
     } catch (UnirestException e) {
       e.printStackTrace();
-    }
+    }*/
   }
 }

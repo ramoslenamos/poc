@@ -9,6 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("api/personne")
 @Api(value = "personnes", description = "Opérations liées aux personnes")
@@ -25,8 +28,32 @@ public class PersonneRestService {
   @ApiOperation(value = "Voir la liste des personnes d'un certain type")
   @GetMapping(value = "/{type}", produces = "application/json")
   public String getAll(@PathVariable("type") String type) {
+    List<String> listCols = new ArrayList<>();
+    listCols.add("Nom");
+    listCols.add("Prenom");
     try {
-      return personneService.getAll(type).toString();
+      return personneService.getAll(type, listCols).toString();
+    } catch (UnirestException e) {
+      return new JsonNode(e.getMessage()).toString();
+    }
+  }
+
+  @ApiOperation(value = "Voir la liste des étudiants")
+  @GetMapping(value = "/étudiants", produces = "application/json")
+  public String getStudents() {
+    List<String> listCols = new ArrayList<>();
+    listCols.add("Nom");
+    listCols.add("Prenom");
+    listCols.add("NumEtudiant");
+    listCols.add("EmailPro");
+    listCols.add("EmailPerso");
+    listCols.add("TelPerso");
+    listCols.add("TelPro");
+    listCols.add("DateDesinscription");
+    listCols.add("DateDeNaissance");
+    listCols.add("Age");
+    try {
+      return personneService.getAll("étudiants", listCols).toString();
     } catch (UnirestException e) {
       return new JsonNode(e.getMessage()).toString();
     }

@@ -3,6 +3,9 @@ package com.example.demo.Service;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 public interface PersonneService {
   /**
@@ -12,7 +15,7 @@ public interface PersonneService {
    * @return la liste d'un sous-type de personnes
    * @throws UnirestException
    */
-  public JsonNode getAll(String typePersonne) throws UnirestException;
+  public JSONObject getAll(String typePersonne, List<String> colLabels) throws UnirestException;
 
   /**
    * Obtient la liste des anciens stagiaire d'une organisation.
@@ -21,7 +24,7 @@ public interface PersonneService {
    * @return la liste des anciens stagiaire de l'organisation
    * @throws UnirestException
    */
-  public JsonNode getOldTrainees(String organisation) throws UnirestException;
+ // public JsonNode getOldTrainees(String organisation) throws UnirestException;
 
   /**
    * Recherche avancée en utilisant les critères de recherche Eudonet.
