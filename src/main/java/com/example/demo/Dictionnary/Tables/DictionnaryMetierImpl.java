@@ -22,9 +22,8 @@ public class DictionnaryMetierImpl implements DictionnaryMetier {
     }
 
     @Override
-    public String labelToDescId(String label) {
-        Dictionnary dictionnary = dictionnaryRepository.findByTableName(label);
-        return dictionnary.getIdTable();
+    public Dictionnary labelToDictionnary(String label) {
+        return dictionnaryRepository.findByTableName(label);
     }
 
     @Override
