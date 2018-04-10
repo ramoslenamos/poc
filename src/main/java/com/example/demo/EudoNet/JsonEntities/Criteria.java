@@ -23,9 +23,11 @@ public class Criteria {
   }
 
   /**
-   * @param field
-   * @param operator
-   * @param value
+   * Constructeur Criteria.
+   *
+   * @param field    Descid du champ du critère
+   * @param operator Opérateur logique de comparaison entre le 'Field' et la 'Value'
+   * @param value    Valuer de comparaison
    */
   public Criteria(String field, Integer operator, String value) {
     super();

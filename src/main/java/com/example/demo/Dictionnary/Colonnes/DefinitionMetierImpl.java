@@ -1,5 +1,6 @@
 package com.example.demo.Dictionnary.Colonnes;
 
+import com.example.demo.Dictionnary.Tables.Dictionnary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,12 @@ public class DefinitionMetierImpl implements  DefinitionMetier{
     public Definition addInfo(Definition info) {
 
         return definitionRepository.saveAndFlush(info);
+    }
+
+    @Override
+    public String labelToDescId(String label, Dictionnary dictionnary) {
+        Definition definition = definitionRepository.findByLabelAndTableName(label, dictionnary);
+        return definition.getIdColoumn();
     }
 
     @Override

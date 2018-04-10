@@ -1,10 +1,12 @@
 package com.example.demo.EudoNet;
 
+import com.example.demo.Dictionnary.Catalogue.Catalogue;
+import com.example.demo.Dictionnary.Catalogue.CatalogueMetier;
 import com.example.demo.Dictionnary.Colonnes.Definition;
 import com.example.demo.Dictionnary.Colonnes.DefinitionMetier;
 import com.example.demo.Dictionnary.Tables.Dictionnary;
-import com.example.demo.Dictionnary.Tables.UserRepository;
 import com.example.demo.Dictionnary.Tables.DictionnaryMetier;
+import com.example.demo.Dictionnary.Tables.UserRepository;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.UserInfos;
 import com.google.gson.GsonBuilder;
@@ -26,6 +28,12 @@ import java.util.Properties;
 public class EudoNetAPI {
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private DictionnaryMetier dictionnaryMetier;
+  @Autowired
+  private DefinitionMetier definitionMetier;
+  @Autowired
+  private CatalogueMetier catalogueMetier;
 
   /**
    * Lance une recherche avancée à partir de critères de recherche complexe.
@@ -35,7 +43,7 @@ public class EudoNetAPI {
    * @return le résultat de la recherche si token valide, ou appel récursif après renouvellement du token.
    * @throws UnirestException
    */
-  public JsonNode search(int descId, CustomSearch customSearch) throws UnirestException {
+  public JsonNode search(String descId, CustomSearch customSearch) throws UnirestException {
     JsonNode bodyResponse = new JsonNode("");
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
@@ -43,7 +51,7 @@ public class EudoNetAPI {
     headers.put("x-auth", getToken());
     String body = new GsonBuilder().create().toJson(customSearch, CustomSearch.class);
 
-    HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", "200").headers(headers).body(body).asJson();
+    HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", descId).headers(headers).body(body).asJson();
     bodyResponse = httpRep.getBody();
     if (!renewToken(bodyResponse)) {
       return bodyResponse;
@@ -88,7 +96,7 @@ public class EudoNetAPI {
     JSONObject resultInfos = response.getObject().getJSONObject("ResultInfos");
     int nb = (int) resultInfos.getInt("ErrorNumber");
     System.out.println("ErrorNumber : " + nb);
-    if (nb == 103 || nb == 103) { // error 103 : token invalide ou introuvable
+    if (nb == 101 || nb == 103) { // error 103 : token invalide ou introuvable
       connect();
       System.out.println("Token renouvelé");
       return true;
@@ -97,6 +105,11 @@ public class EudoNetAPI {
     return false;
   }
 
+  /**
+   * Obtenir le token stocké dans le fichier config.properties
+   *
+   * @return le token
+   */
   private String getToken() {
     Properties prop = new Properties();
     InputStream input = null;
@@ -125,6 +138,11 @@ public class EudoNetAPI {
     return token;
   }
 
+  /**
+   * Ecrire le token dans le fichier config.properties
+   *
+   * @param token le token
+   */
   private void setToken(String token) {
     Properties prop = new Properties();
     OutputStream output = null;
@@ -151,7 +169,7 @@ public class EudoNetAPI {
     }
   }
 
-  public void getListTables(DictionnaryMetier d) throws UnirestException {
+  public void getListTables() throws UnirestException {
 
     JsonNode bodyResponse = new JsonNode("");
     HashMap<String, String> headers = new HashMap<>();
@@ -160,36 +178,32 @@ public class EudoNetAPI {
     headers.put("x-auth", getToken());
     HttpResponse<JsonNode> httpRep = Unirest.get("http://xrm3.eudonet.com/EudoAPI/MetaInfos/ListTabs/").headers(headers).asJson();
 
-    //if (!this.renewToken(bodyResponse)) {
-    // return bodyResponse;
-    //}
 
-    JSONArray tables=httpRep.getBody().getObject().getJSONObject("ResultMetaData").getJSONArray("Tables");
-    for (int i = 0 ; i < tables.length(); i++) {
+    JSONArray tables = httpRep.getBody().getObject().getJSONObject("ResultMetaData").getJSONArray("Tables");
+    for (int i = 0; i < tables.length(); i++) {
       JSONObject obj = tables.getJSONObject(i);
       int A = obj.getInt("Descid");
-      String idTable=String.valueOf(A);
+      String idTable = String.valueOf(A);
       String tableName = obj.getString("Label");
-      Dictionnary dictionnary=new Dictionnary();
+      Dictionnary dictionnary = new Dictionnary();
       dictionnary.setIdTable(idTable);
       dictionnary.setTableName(tableName);
-      d.addInfo(dictionnary);
+      dictionnaryMetier.addInfo(dictionnary);
     }
 
   }
 
-  public void getListTablesDetails(DictionnaryMetier DictionnaryMetier, DefinitionMetier definitionMetier) throws UnirestException {
-
+  public void getListTablesDetails() throws UnirestException {
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");
     headers.put("Content-Type", "application/json");
     headers.put("x-auth", getToken());
-    List<Dictionnary> dictionnaries= DictionnaryMetier.getAllTables();
+    List<Dictionnary> dictionnaries = dictionnaryMetier.getAllTables();
     for (Dictionnary dictionnary : dictionnaries) {
       int[] fields = {0};
-      JSONObject[] jsonObjects=new JSONObject[1];
-      jsonObjects[0]=
-              new JSONObject().put("DescId", dictionnary.getIdTable()).put("AllFields",true).put("Fields",fields);
+      JSONObject[] jsonObjects = new JSONObject[1];
+      jsonObjects[0] =
+              new JSONObject().put("DescId", dictionnary.getIdTable()).put("AllFields", true).put("Fields", fields);
 
 
       String jsonString = new JSONObject()
@@ -198,17 +212,18 @@ public class EudoNetAPI {
       HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/MetaInfos/").
               headers(headers).body(jsonString).asJson();
 
-      JSONArray tables=httpRep.getBody().getObject().getJSONObject("ResultMetaData").getJSONArray("Tables");
 
-      JSONArray jsonArray=tables.getJSONObject(0).getJSONArray("Fields");
+      JSONArray tables = httpRep.getBody().getObject().getJSONObject("ResultMetaData").getJSONArray("Tables");
 
-      for (int i = 0 ; i < jsonArray.length(); i++) {
+      JSONArray jsonArray = tables.getJSONObject(0).getJSONArray("Fields");
+
+      for (int i = 0; i < jsonArray.length(); i++) {
         JSONObject obj = jsonArray.getJSONObject(i);
         int A = obj.getInt("DescId");
-        String idColumn=String.valueOf(A);
+        String idColumn = String.valueOf(A);
         String labelName = obj.getString("Label");
 
-        Definition definition=new Definition();
+        Definition definition = new Definition();
         definition.setIdColoumn(idColumn);
         definition.setLabel(labelName);
         definition.setTableName(dictionnary);
@@ -218,4 +233,28 @@ public class EudoNetAPI {
     }
 
   }
+
+  public void getListCatalogs() throws UnirestException {
+
+    JsonNode bodyResponse = new JsonNode("");
+    HashMap<String, String> headers = new HashMap<>();
+    headers.put("accept", "application/json");
+    headers.put("Content-Type", "application/json");
+    headers.put("x-auth", getToken());
+    HttpResponse<JsonNode> httpRep = Unirest.get("http://xrm3.eudonet.com/EudoAPI/Catalog/{DescId}").
+            routeParam("DescId", "209").headers(headers).asJson();
+
+    JSONArray CatalogValue = httpRep.getBody().getObject().getJSONObject("ResultData").getJSONArray("CatalogValues");
+    for (int i = 0; i < CatalogValue.length(); i++) {
+      JSONObject obj = CatalogValue.getJSONObject(i);
+
+      String DBValue = obj.getString("DBValue");
+      String label = obj.getString("Label");
+      Catalogue c = new Catalogue();
+      c.setDBValue(DBValue);
+      c.setLabel(label);
+      catalogueMetier.addInfo(c);
+    }
+  }
+
 }

@@ -7,5 +7,6 @@ import com.example.demo.Dictionnary.Tables.Dictionnary;
  */
 public interface DefinitionMetier {
     public Definition addInfo(Definition info);
+    public String labelToDescId(String label, Dictionnary dictionnary);
     public void DeleteAll();
 }

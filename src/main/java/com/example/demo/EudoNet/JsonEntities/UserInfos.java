@@ -42,13 +42,15 @@ public class UserInfos {
   }
 
   /**
-   * @param subscriberLogin
-   * @param subscriberPassword
-   * @param userLang
-   * @param userPassword
-   * @param baseName
-   * @param userLogin
-   * @param productName
+   * Constructeur UserInfois.
+   *
+   * @param subscriberLogin    Login abonné
+   * @param subscriberPassword Mot de passe abonné
+   * @param userLang           Langue de connexion
+   * @param userPassword       Mot de passe utilisateu
+   * @param baseName           Nom de la base de données
+   * @param userLogin          Login utilisateur
+   * @param productName        Nom de l'application
    */
   public UserInfos(String subscriberLogin, String subscriberPassword, String baseName, String userLogin, String userPassword, String userLang, String productName) {
     super();

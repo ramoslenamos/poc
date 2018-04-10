@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.Dictionnary.Catalogue.CatalogueMetier;
 import com.example.demo.Dictionnary.Colonnes.DefinitionMetier;
 import com.example.demo.Dictionnary.Tables.Dictionnary;
 import com.example.demo.Dictionnary.Tables.UserRepository;
@@ -16,9 +17,13 @@ public class DemoApplication implements CommandLineRunner {
   @Autowired
   UserRepository userRepository;
   @Autowired
-  private DictionnaryMetier DictionnaryMetier;
+  private DictionnaryMetier dictionnaryMetier;
   @Autowired
   private DefinitionMetier definitionMetier;
+  @Autowired
+  private CatalogueMetier catalogueMetier;
+  @Autowired
+  private EudoNetAPI eudoNetAPI;
 
 
   public static void main(String[] args) {
@@ -27,16 +32,17 @@ public class DemoApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    /*
     try {
-      EudoNetAPI api = new EudoNetAPI();
       definitionMetier.DeleteAll();
-      DictionnaryMetier.DeleteAll();
-      api.getListTables(DictionnaryMetier);
-      api.getListTablesDetails(DictionnaryMetier,definitionMetier);
-
+      dictionnaryMetier.DeleteAll();
+      catalogueMetier.DeleteAll();
+      eudoNetAPI.connect();
+      eudoNetAPI.getListTables();
+      eudoNetAPI.getListTablesDetails();
+      eudoNetAPI.getListCatalogs();
+      eudoNetAPI.disconnect();
     } catch (UnirestException e) {
       e.printStackTrace();
-    }*/
+    }
   }
 }
