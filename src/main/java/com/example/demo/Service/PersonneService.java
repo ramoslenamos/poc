@@ -12,6 +12,7 @@ public interface PersonneService {
    * Obtenir une liste d'un sous-type de personnes.
    *
    * @param typePersonne le type de recherché
+   * @param colLabels les colonnes à montrer
    * @return la liste d'un sous-type de personnes
    * @throws UnirestException
    */
@@ -21,10 +22,11 @@ public interface PersonneService {
    * Obtient la liste des anciens stagiaire d'une organisation.
    *
    * @param organisation le nom de l'organisation
+   * @param colLabels les colonnes à montrer
    * @return la liste des anciens stagiaire de l'organisation
    * @throws UnirestException
    */
- // public JsonNode getOldTrainees(String organisation) throws UnirestException;
+  public JSONObject getOldTrainees(String organisation, List<String> colLabels) throws UnirestException;
 
   /**
    * Recherche avancée en utilisant les critères de recherche Eudonet.

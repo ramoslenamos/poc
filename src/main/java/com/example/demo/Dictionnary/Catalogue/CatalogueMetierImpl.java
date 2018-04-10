@@ -20,6 +20,7 @@ public class CatalogueMetierImpl implements CatalogueMetier {
   @Override
   public String labelToDescId(String label) {
     Catalogue catalogue = catalogueRepository.findByLabel(label);
+
     return catalogue.getDBValue();
   }
 

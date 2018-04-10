@@ -39,35 +39,43 @@ public class PersonneRestService {
   }
 
   @ApiOperation(value = "Voir la liste des étudiants")
-  @GetMapping(value = "/étudiants", produces = "application/json")
+  @GetMapping(value = "/etudiants", produces = "application/json")
   public String getStudents() {
     List<String> listCols = new ArrayList<>();
     listCols.add("Nom");
     listCols.add("Prenom");
-    listCols.add("NumEtudiant");
-    listCols.add("EmailPro");
-    listCols.add("EmailPerso");
-    listCols.add("TelPerso");
-    listCols.add("TelPro");
-    listCols.add("DateDesinscription");
-    listCols.add("DateDeNaissance");
+    listCols.add("N° étudiant");
+    listCols.add("Email pro.");
+    listCols.add("Email perso");
+    listCols.add("Tel. perso");
+    listCols.add("Tél pro.");
+    listCols.add("Date de naissance");
     listCols.add("Age");
     try {
-      return personneService.getAll("étudiants", listCols).toString();
+      return personneService.getAll("étudiant", listCols).toString();
     } catch (UnirestException e) {
       return new JsonNode(e.getMessage()).toString();
     }
   }
-/*
+
   @ApiOperation(value = "Voir la liste des anciens stagiaires d'une entreprise")
   @GetMapping(value = "/stagiaire/{organisation}", produces = "application/json")
   public String getOldTrainees(@PathVariable("organisation") String organisation){
+    List<String> listCols = new ArrayList<>();
+    listCols.add("Nom");
+    listCols.add("Prenom");
+    listCols.add("Email pro.");
+    listCols.add("Email perso");
+    listCols.add("Tel. perso");
+    listCols.add("Tél pro.");
+    listCols.add("Date de naissance");
+    listCols.add("Age");
     try {
-      return personneMetier.getOldTrainees(organisation).toString();
+      return personneService.getOldTrainees(organisation, listCols).toString();
     } catch (UnirestException e) {
       return new JsonNode(e.getMessage()).toString();
     }
-  }*/
+  }
 
   /**
    * Recherche avancée en utilisant les critères de recherche Eudonet

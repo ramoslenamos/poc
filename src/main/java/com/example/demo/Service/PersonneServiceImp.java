@@ -44,10 +44,10 @@ public class PersonneServiceImp implements PersonneService {
     JSONObject response = new JSONObject();
 
     Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
-    Map<String, String> map = new HashMap<>();
+    Map<Integer, String> map = new HashMap<>();
     for (String col : colLabels) {
       String id = defintitionMetier.labelToDescId(col, personDic);
-      map.put(id, col);
+      map.put(Integer.parseInt(id), col);
     }
     Criteria criteria = new Criteria(defintitionMetier.labelToDescId("Type", personDic), 9, catalogueMetier.labelToDescId(typePersonne));
     List<WhereCustom> whereCustoms = new ArrayList<>();
@@ -56,20 +56,9 @@ public class PersonneServiceImp implements PersonneService {
     List<OrderBy> orderBy = new ArrayList<>();
     //orderBy.add(new OrderBy(201, 0));
 
-    JSONArray personsEudo = eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.values()), whereCustom, orderBy)).getObject().getJSONArray("rows");
-    JSONArray personnnes = new JSONArray();
-    for (int i = 0; i < personsEudo.length(); i++) {
-      JSONArray champs = personsEudo.getJSONArray(i);
-      JSONObject personne = new JSONObject();
-      for (int j = 0; j < champs.length(); i++) {
-        JSONObject champ = champs.getJSONObject(i);
-        personne.put(map.get(champ.getString("DescId")), champ.getString("Value"));
-      }
-      personnnes.put(personne);
-    }
-    response.put("personnes", personnnes);
+    JSONArray personsEudo = eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.keySet()), whereCustom, orderBy)).getObject().getJSONObject("ResultData").getJSONArray("Rows");
 
-    return response;
+    return extractJson(personsEudo, map, typePersonne);
   }
 
   /**
@@ -79,19 +68,27 @@ public class PersonneServiceImp implements PersonneService {
    * @return la liste des anciens stagiaire de l'organisation
    * @throws UnirestException
    */
-  /*
   @Override
-  public JsonNode getOldTrainees(String organisation) throws UnirestException {
-    List<Integer> listCols = new ArrayList<>();
-    Criteria criteria = new Criteria("301", 9, organisation);
+  public JSONObject getOldTrainees(String organisation, List<String> colLabels) throws UnirestException {
+    Dictionnary orgaDic = dictionnaryMetier.labelToDictionnary("Organisme");
+    Dictionnary stageDic = dictionnaryMetier.labelToDictionnary("Stages");
+    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
+
+    Map<Integer, String> map = new HashMap<>();
+    for (String col : colLabels) {
+      String id = defintitionMetier.labelToDescId(col, personDic);
+      map.put(Integer.parseInt(id), col);
+    }
+    Criteria criteria = new Criteria(defintitionMetier.labelToDescId("Sigle", orgaDic), 9, organisation);
     List<WhereCustom> whereCustoms = new ArrayList<>();
     whereCustoms.add(new WhereCustom());
     WhereCustom whereCustom = new WhereCustom(whereCustoms, criteria, 0);
     List<OrderBy> orderBy = new ArrayList<>();
     //orderBy.add(new OrderBy(201, 0));
 
-    return eudoNetAPI.search("2400", new CustomSearch(true, 0, 0, listCols, whereCustom, orderBy));
-  }*/
+    JSONArray personsEudo = eudoNetAPI.search(stageDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.keySet()), whereCustom, orderBy)).getObject().getJSONObject("ResultData").getJSONArray("Rows");
+    return extractJson(personsEudo, map, "anciens stagiaires");
+  }
 
 
   /**
@@ -104,5 +101,23 @@ public class PersonneServiceImp implements PersonneService {
   @Override
   public JsonNode search(CustomSearch customSearch) throws UnirestException {
     return eudoNetAPI.search(dictionnaryMetier.labelToDictionnary("Personne").getIdTable(), customSearch);
+  }
+
+  private JSONObject extractJson(JSONArray personsEudo, Map<Integer, String> map, String responseName){
+    JSONObject response = new JSONObject();
+    JSONArray personnnes = new JSONArray();
+    for (int i = 0; i < personsEudo.length(); i++) {
+      JSONObject champsArray = personsEudo.getJSONObject(i);
+      JSONArray champs = champsArray.getJSONArray("Fields");
+      JSONObject personne = new JSONObject();
+      for (int j = 0; j < champs.length(); j++) {
+        JSONObject champ = champs.getJSONObject(j);
+        personne.put(map.get(champ.getInt("DescId")), champ.getString("Value"));
+      }
+      personnnes.put(personne);
+    }
+    response.put(responseName, personnnes);
+
+    return response;
   }
 }
