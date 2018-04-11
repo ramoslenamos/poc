@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface DefinitionRepository extends JpaRepository<Definition, Long> {
   @Query(value = "SELECT * from Definition d   where d.label=?1 and d.id_table=?2",nativeQuery = true)
   Definition findByLabelIdTable(String label, Long idTable);
+  Definition findByIdColoumn(String idColoumn);
 }

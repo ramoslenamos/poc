@@ -8,6 +8,8 @@ import com.example.demo.Domain.Dictionnary;
  */
 public interface DefinitionMetier {
     public Definition addInfo(Definition info);
+    public Definition getByLabelIdTable(String label, Dictionnary dictionnary);
     public String labelToDescId(String label, Dictionnary dictionnary);
+    public Definition getByColoumnId(String coloumnId);
     public void DeleteAll();
 }

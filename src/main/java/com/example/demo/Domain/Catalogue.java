@@ -18,9 +18,13 @@ public class Catalogue implements Serializable {
   @Column(length = 50)
   private String label;
 
-  public Catalogue(String DBValue, String label) {
+  @ManyToOne
+  private Definition definition;
+
+  public Catalogue(String DBValue, String label, Definition definition) {
     this.DBValue = DBValue;
     this.label = label;
+    this.definition = definition;
   }
 
   public Catalogue() {
@@ -48,6 +52,14 @@ public class Catalogue implements Serializable {
 
   public void setLabel(String label) {
     this.label = label;
+  }
+
+  public Definition getDefinition() {
+    return definition;
+  }
+
+  public void setDefinition(Definition idColoumn) {
+    this.definition = idColoumn;
   }
 }
 

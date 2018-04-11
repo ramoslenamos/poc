@@ -38,7 +38,7 @@ public class DemoApplication implements CommandLineRunner {
       eudoNetAPI.connect();
       eudoNetAPI.getListTables();
       eudoNetAPI.getListTablesDetails();
-      eudoNetAPI.getListCatalogs();
+      eudoNetAPI.getListCatalogs("209");
       eudoNetAPI.disconnect();
     } catch (UnirestException e) {
       e.printStackTrace();

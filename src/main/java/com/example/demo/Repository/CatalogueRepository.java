@@ -1,6 +1,7 @@
 package com.example.demo.Repository;
 
 import com.example.demo.Domain.Catalogue;
+import com.example.demo.Domain.Definition;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,6 +11,5 @@ import java.util.List;
  */
 public interface CatalogueRepository extends JpaRepository<Catalogue, Long> {
   Catalogue findByLabel(String label);
-
-  List<Catalogue> findByDefinition(Long definition_id);
+  List<Catalogue> findByDefinition(Definition definition);
 }

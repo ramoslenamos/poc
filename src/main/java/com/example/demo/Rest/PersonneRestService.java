@@ -40,6 +40,11 @@ public class PersonneRestService {
     }
   }
 
+  /**
+   * Obtenir la liste des types de personnes.
+   *
+   * @return la liste des types de personnes
+   */
   @ApiOperation(value = "Voir la liste types de personne")
   @GetMapping(value = "/types", produces = "application/json")
   public String getTypes() {
@@ -66,6 +71,12 @@ public class PersonneRestService {
     }
   }
 
+  /**
+   * Obtenir les infos d'un étudiant
+   *
+   * @param numEtudiant le numéro étudiant
+   * @return
+   */
   @ApiOperation(value = "Recherche d'un étudiant")
   @GetMapping(value = "/etudiant/{numEtudiant}", produces = "application/json")
   public String getStudent(@PathVariable("numEtudiant") String numEtudiant) {

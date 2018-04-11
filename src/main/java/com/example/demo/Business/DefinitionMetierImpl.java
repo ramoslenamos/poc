@@ -21,10 +21,19 @@ public class DefinitionMetierImpl implements  DefinitionMetier{
     }
 
     @Override
+    public Definition getByLabelIdTable(String label, Dictionnary dictionnary) {
+        return definitionRepository.findByLabelIdTable(label, dictionnary.getId());
+    }
+
+    @Override
     public String labelToDescId(String label, Dictionnary dictionnary) {
-        System.out.println("REQ : " + label +", DICO_ID :"+ dictionnary.getId());
         Definition definition = definitionRepository.findByLabelIdTable(label, dictionnary.getId());
       return definition.getIdColoumn();
+    }
+
+    @Override
+    public Definition getByColoumnId(String coloumnId) {
+        return definitionRepository.findByIdColoumn(coloumnId);
     }
 
     @Override

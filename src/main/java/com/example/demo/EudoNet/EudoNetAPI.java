@@ -229,7 +229,7 @@ public class EudoNetAPI {
     }
   }
 
-  public void getListCatalogs() throws UnirestException {
+  public void getListCatalogs(String catalogDescId) throws UnirestException {
 
     JsonNode bodyResponse = new JsonNode("");
     HashMap<String, String> headers = new HashMap<>();
@@ -237,7 +237,7 @@ public class EudoNetAPI {
     headers.put("Content-Type", "application/json");
     headers.put("x-auth", getToken());
     HttpResponse<JsonNode> httpRep = Unirest.get("http://xrm3.eudonet.com/EudoAPI/Catalog/{DescId}").
-            routeParam("DescId", "209").headers(headers).asJson();
+            routeParam("DescId", catalogDescId).headers(headers).asJson();
     System.out.println(httpRep.getBody().getObject().toString(3));
     JSONArray CatalogValue = httpRep.getBody().getObject().getJSONObject("ResultData").getJSONArray("CatalogValues");
     for (int i = 0; i < CatalogValue.length(); i++) {
@@ -248,6 +248,9 @@ public class EudoNetAPI {
       Catalogue c = new Catalogue();
       c.setDBValue(DBValue);
       c.setLabel(label);
+
+      Definition def = definitionMetier.getByColoumnId(catalogDescId);
+      c.setDefinition(def);
 
       catalogueMetier.addInfo(c);
     }

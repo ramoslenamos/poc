@@ -62,7 +62,8 @@ public class PersonneServiceImp implements PersonneService {
   @Override
   public JSONObject getPersonTypes() {
     Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
-    List<Catalogue> catalogues = new ArrayList<>();
+    Definition def = defintitionMetier.getByLabelIdTable("Type", personDic);
+    List<Catalogue> catalogues = catalogueMetier.getByDefinition(def);
     JSONObject response = new JSONObject();
     JSONArray types = new JSONArray();
     for (Catalogue catalogue: catalogues) {
