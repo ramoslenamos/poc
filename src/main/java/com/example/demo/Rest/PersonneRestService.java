@@ -1,13 +1,15 @@
 package com.example.demo.Rest;
 
-import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.Service.PersonneService;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,16 @@ public class PersonneRestService {
     listCols.add("Nom");
     listCols.add("Prenom");
     try {
-      return personneService.getAll(type, listCols).toString();
+      return personneService.getPersonsByType(type, listCols).toString();
     } catch (UnirestException e) {
       return new JsonNode(e.getMessage()).toString();
     }
+  }
+
+  @ApiOperation(value = "Voir la liste types de personne")
+  @GetMapping(value = "/types", produces = "application/json")
+  public String getTypes() {
+    return personneService.getPersonTypes().toString();
   }
 
   @ApiOperation(value = "Voir la liste des étudiants")
@@ -52,7 +60,43 @@ public class PersonneRestService {
     listCols.add("Date de naissance");
     listCols.add("Age");
     try {
-      return personneService.getAll("étudiant", listCols).toString();
+      return personneService.getPersonsByType("étudiant", listCols).toString();
+    } catch (UnirestException e) {
+      return new JsonNode(e.getMessage()).toString();
+    }
+  }
+
+  @ApiOperation(value = "Recherche d'un étudiant")
+  @GetMapping(value = "/etudiant/{numEtudiant}", produces = "application/json")
+  public String getStudent(@PathVariable("numEtudiant") String numEtudiant) {
+    List<String> listCols = new ArrayList<>();
+    listCols.add("Nom");
+    listCols.add("Prénom");
+    listCols.add("Type");
+    listCols.add("N° étudiant");
+    listCols.add("Particule");
+    listCols.add("Civilité");
+    listCols.add("Date de naissance");
+    listCols.add("Email pro.");
+    listCols.add("Email perso");
+    listCols.add("Tel. perso");
+    listCols.add("Tél pro.");
+    listCols.add("Fonction détaillée");
+    listCols.add("Contact archivé");
+    listCols.add("Obtention diplôme");
+    listCols.add("Diplômes soutenus");
+    listCols.add("Origine");
+    listCols.add("Organisme princ°");
+    listCols.add("Date désinscription");
+    listCols.add("Diplôme");
+    listCols.add("Réseaux sociaux");
+    listCols.add("LinkedIn");
+    listCols.add("Facebook");
+    listCols.add("Twitter");
+    listCols.add("ID Contact");
+
+    try {
+      return personneService.getStudent(numEtudiant, listCols).toString();
     } catch (UnirestException e) {
       return new JsonNode(e.getMessage()).toString();
     }
@@ -60,7 +104,7 @@ public class PersonneRestService {
 
   @ApiOperation(value = "Voir la liste des anciens stagiaires d'une entreprise")
   @GetMapping(value = "/stagiaire/{organisation}", produces = "application/json")
-  public String getOldTrainees(@PathVariable("organisation") String organisation){
+  public String getOldTrainees(@PathVariable("organisation") String organisation) {
     List<String> listCols = new ArrayList<>();
     listCols.add("Nom");
     listCols.add("Prenom");
@@ -71,7 +115,7 @@ public class PersonneRestService {
     listCols.add("Date de naissance");
     listCols.add("Age");
     try {
-      return personneService.getOldTrainees(organisation, listCols).toString();
+      return personneService.getOldTraineesByOrg(organisation, listCols).toString();
     } catch (UnirestException e) {
       return new JsonNode(e.getMessage()).toString();
     }
@@ -83,6 +127,7 @@ public class PersonneRestService {
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères
    */
+  /*
   @ApiOperation(value = "Recherche avancée d'une personne")
   @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json")
   public String search(@RequestBody CustomSearch customSearch) {
@@ -92,4 +137,5 @@ public class PersonneRestService {
       return new JsonNode(e.getMessage()).toString();
     }
   }
+  */
 }

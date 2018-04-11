@@ -1,12 +1,12 @@
 package com.example.demo.EudoNet;
 
-import com.example.demo.Dictionnary.Catalogue.Catalogue;
-import com.example.demo.Dictionnary.Catalogue.CatalogueMetier;
-import com.example.demo.Dictionnary.Colonnes.Definition;
-import com.example.demo.Dictionnary.Colonnes.DefinitionMetier;
-import com.example.demo.Dictionnary.Tables.Dictionnary;
-import com.example.demo.Dictionnary.Tables.DictionnaryMetier;
-import com.example.demo.Dictionnary.Tables.UserRepository;
+import com.example.demo.Domain.Catalogue;
+import com.example.demo.Business.CatalogueMetier;
+import com.example.demo.Domain.Definition;
+import com.example.demo.Business.DefinitionMetier;
+import com.example.demo.Domain.Dictionnary;
+import com.example.demo.Business.DictionnaryMetier;
+import com.example.demo.Repository.UserRepository;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.UserInfos;
 import com.google.gson.GsonBuilder;
@@ -50,7 +50,6 @@ public class EudoNetAPI {
     headers.put("Content-Type", "application/json");
     headers.put("x-auth", getToken());
     String body = new GsonBuilder().create().toJson(customSearch, CustomSearch.class);
-
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", descId).headers(headers).body(body).asJson();
     bodyResponse = httpRep.getBody();
     if (!renewToken(bodyResponse)) {
@@ -69,12 +68,10 @@ public class EudoNetAPI {
     headers.put("accept", "application/json");
     headers.put("Content-Type", "application/json");
     UserInfos userInfos = userRepository.findOneById(new Long(1));
-    System.out.println("USER_LOGIN : " + userInfos.getUserLogin());
     String body = new GsonBuilder().create().toJson(userInfos, UserInfos.class);
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Authenticate/Token").headers(headers).body(body).asJson();
     // Récupération du token
     String token = httpRep.getBody().getObject().getJSONObject("ResultData").getString("Token");
-    System.out.println("TOKEN : " + token);
     this.setToken(token);
   }
 
@@ -95,8 +92,8 @@ public class EudoNetAPI {
   private boolean renewToken(JsonNode response) throws UnirestException {
     JSONObject resultInfos = response.getObject().getJSONObject("ResultInfos");
     int nb = (int) resultInfos.getInt("ErrorNumber");
-    System.out.println("ErrorNumber : " + nb);
-    if (nb == 101 || nb == 103) { // error 103 : token invalide ou introuvable
+    System.out.println("Error EudoNetAPI:\n"+ resultInfos.toString(3));
+    if (nb == 101 || nb == 103) { // error 101-103 : token invalide ou introuvable
       connect();
       System.out.println("Token renouvelé");
       return true;
@@ -229,9 +226,7 @@ public class EudoNetAPI {
         definition.setTableName(dictionnary);
         definitionMetier.addInfo(definition);
       }
-
     }
-
   }
 
   public void getListCatalogs() throws UnirestException {
@@ -243,7 +238,7 @@ public class EudoNetAPI {
     headers.put("x-auth", getToken());
     HttpResponse<JsonNode> httpRep = Unirest.get("http://xrm3.eudonet.com/EudoAPI/Catalog/{DescId}").
             routeParam("DescId", "209").headers(headers).asJson();
-
+    System.out.println(httpRep.getBody().getObject().toString(3));
     JSONArray CatalogValue = httpRep.getBody().getObject().getJSONObject("ResultData").getJSONArray("CatalogValues");
     for (int i = 0; i < CatalogValue.length(); i++) {
       JSONObject obj = CatalogValue.getJSONObject(i);
@@ -253,6 +248,7 @@ public class EudoNetAPI {
       Catalogue c = new Catalogue();
       c.setDBValue(DBValue);
       c.setLabel(label);
+
       catalogueMetier.addInfo(c);
     }
   }

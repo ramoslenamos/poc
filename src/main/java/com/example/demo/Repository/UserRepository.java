@@ -1,4 +1,4 @@
-package com.example.demo.Dictionnary.Tables;
+package com.example.demo.Repository;
 
 import com.example.demo.EudoNet.JsonEntities.UserInfos;
 import org.springframework.data.jpa.repository.JpaRepository;

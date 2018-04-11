@@ -1,6 +1,7 @@
-package com.example.demo.Dictionnary.Colonnes;
+package com.example.demo.Business;
 
-import com.example.demo.Dictionnary.Tables.Dictionnary;
+import com.example.demo.Domain.Definition;
+import com.example.demo.Domain.Dictionnary;
 
 /**
  * Created by othmane on 23/03/2018.

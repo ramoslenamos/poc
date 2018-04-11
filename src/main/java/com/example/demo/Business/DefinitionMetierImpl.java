@@ -1,6 +1,8 @@
-package com.example.demo.Dictionnary.Colonnes;
+package com.example.demo.Business;
 
-import com.example.demo.Dictionnary.Tables.Dictionnary;
+import com.example.demo.Domain.Definition;
+import com.example.demo.Domain.Dictionnary;
+import com.example.demo.Repository.DefinitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

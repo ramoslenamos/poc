@@ -1,4 +1,4 @@
-package com.example.demo.Dictionnary.Catalogue;
+package com.example.demo.Domain;
 
 import javax.persistence.*;
 import java.io.Serializable;

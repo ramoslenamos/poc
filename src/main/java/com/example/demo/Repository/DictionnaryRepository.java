@@ -1,5 +1,6 @@
-package com.example.demo.Dictionnary.Tables;
+package com.example.demo.Repository;
 
+import com.example.demo.Domain.Dictionnary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

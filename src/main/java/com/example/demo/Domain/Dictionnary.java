@@ -1,6 +1,5 @@
-package com.example.demo.Dictionnary.Tables;
+package com.example.demo.Domain;
 
-import com.example.demo.Dictionnary.Colonnes.Definition;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.persistence.*;

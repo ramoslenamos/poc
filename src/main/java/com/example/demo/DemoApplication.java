@@ -1,10 +1,9 @@
 package com.example.demo;
 
-import com.example.demo.Dictionnary.Catalogue.CatalogueMetier;
-import com.example.demo.Dictionnary.Colonnes.DefinitionMetier;
-import com.example.demo.Dictionnary.Tables.Dictionnary;
-import com.example.demo.Dictionnary.Tables.UserRepository;
-import com.example.demo.Dictionnary.Tables.DictionnaryMetier;
+import com.example.demo.Business.CatalogueMetier;
+import com.example.demo.Business.DefinitionMetier;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.Business.DictionnaryMetier;
 import com.example.demo.EudoNet.EudoNetAPI;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ public class DemoApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    /*
     try {
       definitionMetier.DeleteAll();
       dictionnaryMetier.DeleteAll();
@@ -44,6 +42,6 @@ public class DemoApplication implements CommandLineRunner {
       eudoNetAPI.disconnect();
     } catch (UnirestException e) {
       e.printStackTrace();
-    }*/
+    }
   }
 }

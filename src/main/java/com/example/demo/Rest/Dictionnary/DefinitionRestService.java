@@ -1,5 +1,7 @@
-package com.example.demo.Dictionnary.Colonnes;
+package com.example.demo.Rest.Dictionnary;
 
+import com.example.demo.Business.DefinitionMetier;
+import com.example.demo.Domain.Definition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,6 @@
-package com.example.demo.Dictionnary.Tables;
+package com.example.demo.Business;
+
+import com.example.demo.Domain.Dictionnary;
 
 import java.util.List;
 

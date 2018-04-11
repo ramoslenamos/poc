@@ -1,4 +1,6 @@
-package com.example.demo.Dictionnary.Catalogue;
+package com.example.demo.Business;
+
+import com.example.demo.Domain.Catalogue;
 
 /**
  * Created by othmane on 09/04/2018.

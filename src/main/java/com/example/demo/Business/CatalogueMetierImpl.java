@@ -1,8 +1,11 @@
-package com.example.demo.Dictionnary.Catalogue;
+package com.example.demo.Business;
 
-import com.example.demo.Dictionnary.Colonnes.Definition;
+import com.example.demo.Domain.Catalogue;
+import com.example.demo.Repository.CatalogueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by othmane on 09/04/2018.

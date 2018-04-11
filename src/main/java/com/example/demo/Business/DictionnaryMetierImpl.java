@@ -1,5 +1,7 @@
-package com.example.demo.Dictionnary.Tables;
+package com.example.demo.Business;
 
+import com.example.demo.Domain.Dictionnary;
+import com.example.demo.Repository.DictionnaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,7 @@ public class DictionnaryMetierImpl implements DictionnaryMetier {
 
     @Override
     public Dictionnary addInfo(Dictionnary info) {
-
         System.out.println(info);
-        System.out.println("sALUUT");
         return dictionnaryRepository.saveAndFlush(info);
     }
 
