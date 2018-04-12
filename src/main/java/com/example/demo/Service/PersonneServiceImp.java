@@ -66,13 +66,21 @@ public class PersonneServiceImp implements PersonneService {
     List<Catalogue> catalogues = catalogueMetier.getByDefinition(def);
     JSONObject response = new JSONObject();
     JSONArray types = new JSONArray();
-    for (Catalogue catalogue: catalogues) {
+    for (Catalogue catalogue : catalogues) {
       types.put(catalogue.getLabel());
     }
     response.put("Types", types);
     return response;
   }
 
+  /**
+   * Obtenir les informations d'un étudiant.
+   *
+   * @param numEtudiant le numéro de l'étudiant
+   * @param colLabels   les colonnes à montrer
+   * @return les informations d'un étudiant
+   * @throws UnirestException
+   */
   @Override
   public JSONObject getStudent(String numEtudiant, List<String> colLabels) throws UnirestException {
     Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
@@ -87,12 +95,12 @@ public class PersonneServiceImp implements PersonneService {
 
     JSONArray personnesEudo = eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.keySet()), whereCustom, orderBy)).getObject().getJSONObject("ResultData").getJSONArray("Rows");
 
-    return  prettify(personnesEudo, map);
+    return prettify(personnesEudo, map);
   }
 
 
   /**
-   * Obtient la liste des anciens stagiaire d'une organisation.
+   * Obtenir la liste des anciens stagiaire d'une organisation.
    *
    * @param organisation le nom de l'organisation
    * @return la liste des anciens stagiaire de l'organisation

@@ -1,15 +1,13 @@
 package com.example.demo.Rest;
 
+import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.Service.PersonneService;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +43,18 @@ public class PersonneRestService {
    *
    * @return la liste des types de personnes
    */
-  @ApiOperation(value = "Voir la liste types de personne")
+  @ApiOperation(value = "Voir la liste des types de personne.")
   @GetMapping(value = "/types", produces = "application/json")
   public String getTypes() {
     return personneService.getPersonTypes().toString();
   }
 
-  @ApiOperation(value = "Voir la liste des étudiants")
+  /**
+   * Obtenir la liste des étudiants.
+   *
+   * @return la liste des étudiants.
+   */
+  @ApiOperation(value = "Voir la liste des étudiants.")
   @GetMapping(value = "/etudiants", produces = "application/json")
   public String getStudents() {
     List<String> listCols = new ArrayList<>();
@@ -72,12 +75,12 @@ public class PersonneRestService {
   }
 
   /**
-   * Obtenir les infos d'un étudiant
+   * Obtenir les infos d'un étudiant.
    *
    * @param numEtudiant le numéro étudiant
-   * @return
+   * @return les infos d'un étudiant
    */
-  @ApiOperation(value = "Recherche d'un étudiant")
+  @ApiOperation(value = "Recherche d'un étudiant.")
   @GetMapping(value = "/etudiant/{numEtudiant}", produces = "application/json")
   public String getStudent(@PathVariable("numEtudiant") String numEtudiant) {
     List<String> listCols = new ArrayList<>();
@@ -113,7 +116,13 @@ public class PersonneRestService {
     }
   }
 
-  @ApiOperation(value = "Voir la liste des anciens stagiaires d'une entreprise")
+  /**
+   * Obtenirla liste des anciens stagiaires d'une organisation.
+   *
+   * @param organisation le nom de l'organisation
+   * @return la liste des anciens stagiaires
+   */
+  @ApiOperation(value = "Voir la liste des anciens stagiaires d'une organisation.")
   @GetMapping(value = "/stagiaire/{organisation}", produces = "application/json")
   public String getOldTrainees(@PathVariable("organisation") String organisation) {
     List<String> listCols = new ArrayList<>();
@@ -138,8 +147,7 @@ public class PersonneRestService {
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères
    */
-  /*
-  @ApiOperation(value = "Recherche avancée d'une personne")
+  @ApiOperation(value = "Recherche avancée Eudonet d'une personne.")
   @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json")
   public String search(@RequestBody CustomSearch customSearch) {
     try {
@@ -148,5 +156,4 @@ public class PersonneRestService {
       return new JsonNode(e.getMessage()).toString();
     }
   }
-  */
 }
