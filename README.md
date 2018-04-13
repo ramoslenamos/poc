@@ -1,4 +1,4 @@
-# POC Datahub ISTIC
+# POC Data hub ISTIC
 Auteurs : REZK Mino, POINCE Alexis, BOITARD Romain, DUMONT Axel, WAFI Othmane.
 ## Présentation
 Démonstration de la faisabilité d'une API permettant d'accéder au données de l'ISTIC. Nous proposons des exemples de services REST pour accéder aux données des étudiants, tout en ignorant la source des données et sa complexité. L'architecture choisie permet d'ajouter des sources de données et des services web utilisant plusieurs sources.
