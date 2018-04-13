@@ -8,4 +8,7 @@ Démonstration de la faisabilité d'une API permettant d'accéder au données de
 3. Documentation de l'API : http://localhost:XXXX/swagger-ui.html
 ### Informations complémentaires :
 Définir le port et les informations de connexion mySQL : /src/main/resources/application.properties
+## Technologies :
+Java, REST, JSON, MySQL, Spring Boot, Hibernate, Tomcat, Unirest, Swagger
+
 
