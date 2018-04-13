@@ -36,8 +36,8 @@ public class SwaggerConfig {
    */
   private ApiInfo apiInfo() {
     return new ApiInfoBuilder()
-            .title("API Documentation")
-            .description("ISTIC Datahub API documentation")
+            .title("Documentation de l'API du data hub.")
+            .description("Services REST permettant d'accéder aux données de l'ISTIC.")
             .version("0.1")
             .build();
   }

@@ -31,14 +31,15 @@ public class DemoApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
+    // Création du dictionnaire de mapping desciIds - labels
     try {
+      catalogueMetier.DeleteAll();
       definitionMetier.DeleteAll();
       dictionnaryMetier.DeleteAll();
-      catalogueMetier.DeleteAll();
       eudoNetAPI.connect();
       eudoNetAPI.getListTables();
       eudoNetAPI.getListTablesDetails();
-      eudoNetAPI.getListCatalogs("209");
+      eudoNetAPI.getListCatalogs("Personnes", "Type");
       eudoNetAPI.disconnect();
     } catch (UnirestException e) {
       e.printStackTrace();

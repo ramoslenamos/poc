@@ -229,8 +229,9 @@ public class EudoNetAPI {
     }
   }
 
-  public void getListCatalogs(String catalogDescId) throws UnirestException {
-
+  public void getListCatalogs(String labelDictionnary, String labelDefinition) throws UnirestException {
+    Dictionnary personDic = dictionnaryMetier.labelToDictionnary(labelDictionnary);
+    String catalogDescId = definitionMetier.getByLabelIdTable(labelDefinition, personDic).getIdColoumn();
     JsonNode bodyResponse = new JsonNode("");
     HashMap<String, String> headers = new HashMap<>();
     headers.put("accept", "application/json");

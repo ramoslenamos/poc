@@ -31,6 +31,8 @@ public class PersonneRestService {
     List<String> listCols = new ArrayList<>();
     listCols.add("Nom");
     listCols.add("Prenom");
+    listCols.add("Civilité");
+    listCols.add("Type");
     try {
       return personneService.getPersonsByType(type, listCols).toString();
     } catch (UnirestException e) {
@@ -65,8 +67,6 @@ public class PersonneRestService {
     listCols.add("Email perso");
     listCols.add("Tel. perso");
     listCols.add("Tél pro.");
-    listCols.add("Date de naissance");
-    listCols.add("Age");
     try {
       return personneService.getPersonsByType("étudiant", listCols).toString();
     } catch (UnirestException e) {
@@ -132,8 +132,6 @@ public class PersonneRestService {
     listCols.add("Email perso");
     listCols.add("Tel. perso");
     listCols.add("Tél pro.");
-    listCols.add("Date de naissance");
-    listCols.add("Age");
     try {
       return personneService.getOldTraineesByOrg(organisation, listCols).toString();
     } catch (UnirestException e) {
@@ -147,7 +145,7 @@ public class PersonneRestService {
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères
    */
-  @ApiOperation(value = "Recherche avancée Eudonet d'une personne.")
+  @ApiOperation(value = "Recherche Eudonet avancée d'une personne.")
   @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json")
   public String search(@RequestBody CustomSearch customSearch) {
     try {
