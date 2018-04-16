@@ -21,7 +21,7 @@ public class DataHubRestService {
    * @param customSearch les critères de datahub
    * @return la liste des personnes correspondantes aux critères
    */
-  @ApiOperation(value = "Datahub approfondie dans un domaine.")
+  @ApiOperation(value = "Recherche approfondie dans un domaine.")
   @RequestMapping(value = "/search/{domaine}", method = RequestMethod.POST, produces = "application/json")
   public String search(@RequestBody CustomSearch customSearch, @PathVariable("domaine") String domaine) {
     try {
