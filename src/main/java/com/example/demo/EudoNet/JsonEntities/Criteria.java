@@ -8,13 +8,13 @@ public class Criteria {
 
   @SerializedName("Field")
   @Expose
-  public String field;
+  public String champ;
   @SerializedName("Operator")
   @Expose
-  public Integer operator;
+  public Integer operateur;
   @SerializedName("Value")
   @Expose
-  public String value;
+  public String valeur;
 
   /**
    * No args constructor for use in serialization
@@ -27,13 +27,20 @@ public class Criteria {
    *
    * @param field    Descid du champ du critère
    * @param operator Opérateur logique de comparaison entre le 'Field' et la 'Value'
-   * @param value    Valuer de comparaison
+   * @param valeur    Valuer de comparaison
    */
-  public Criteria(String field, Integer operator, String value) {
+  public Criteria(String field, Integer operator, String valeur) {
     super();
-    this.field = field;
-    this.operator = operator;
-    this.value = value;
+    this.champ = field;
+    this.operateur = operator;
+    this.valeur = valeur;
   }
 
+  public String getChamp() {
+    return champ;
+  }
+
+  public void setChamp(String champ) {
+    this.champ = champ;
+  }
 }

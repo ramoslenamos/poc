@@ -6,6 +6,8 @@ import com.example.demo.Repository.DefinitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by othmane on 23/03/2018.
  */
@@ -39,5 +41,10 @@ public class DefinitionMetierImpl implements  DefinitionMetier{
     @Override
     public void DeleteAll() {
         definitionRepository.deleteAll();
+    }
+
+    @Override
+    public List<Definition> getByDictionnary(Dictionnary dictionnary) {
+        return definitionRepository.findByTableName(dictionnary);
     }
 }

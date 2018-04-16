@@ -46,11 +46,11 @@ public interface PersonneService {
   public JSONObject getOldTraineesByOrg(String organisation, List<String> colLabels) throws UnirestException;
 
   /**
-   * Recherche avancée en utilisant les critères de recherche Eudonet.
+   * Datahub avancée en utilisant les critères de recherche Eudonet.
    *
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères
    * @throws UnirestException
    */
-  public JsonNode search(CustomSearch customSearch) throws UnirestException;
+  public JSONObject search(CustomSearch customSearch) throws UnirestException;
 }

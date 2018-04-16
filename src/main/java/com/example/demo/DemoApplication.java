@@ -32,6 +32,7 @@ public class DemoApplication implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
     // Création du dictionnaire de mapping desciIds - labels
+    /*
     try {
       catalogueMetier.DeleteAll();
       definitionMetier.DeleteAll();
@@ -44,5 +45,6 @@ public class DemoApplication implements CommandLineRunner {
     } catch (UnirestException e) {
       e.printStackTrace();
     }
+    */
   }
 }

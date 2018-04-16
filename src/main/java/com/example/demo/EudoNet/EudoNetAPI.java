@@ -50,6 +50,7 @@ public class EudoNetAPI {
     headers.put("Content-Type", "application/json");
     headers.put("x-auth", getToken());
     String body = new GsonBuilder().create().toJson(customSearch, CustomSearch.class);
+    System.out.println("JSON ENVOYE : "+ new JSONObject(body).toString(3));
     HttpResponse<JsonNode> httpRep = Unirest.post("http://xrm3.eudonet.com/EudoAPI/Search/{descId}").routeParam("descId", descId).headers(headers).body(body).asJson();
     bodyResponse = httpRep.getBody();
     if (!renewToken(bodyResponse)) {
@@ -118,7 +119,7 @@ public class EudoNetAPI {
       // load a properties file
       prop.load(input);
 
-      // get the property value and print it out
+      // get the property valeur and print it out
       token = prop.getProperty("token");
 
     } catch (IOException ex) {
@@ -148,7 +149,7 @@ public class EudoNetAPI {
 
       output = new FileOutputStream("src/main/resources/config.properties");
 
-      // set the properties value
+      // set the properties valeur
       prop.setProperty("token", token);
       // save properties to project root folder
       prop.store(output, null);
@@ -239,7 +240,6 @@ public class EudoNetAPI {
     headers.put("x-auth", getToken());
     HttpResponse<JsonNode> httpRep = Unirest.get("http://xrm3.eudonet.com/EudoAPI/Catalog/{DescId}").
             routeParam("DescId", catalogDescId).headers(headers).asJson();
-    System.out.println(httpRep.getBody().getObject().toString(3));
     JSONArray CatalogValue = httpRep.getBody().getObject().getJSONObject("ResultData").getJSONArray("CatalogValues");
     for (int i = 0; i < CatalogValue.length(); i++) {
       JSONObject obj = CatalogValue.getJSONObject(i);

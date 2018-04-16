@@ -80,7 +80,7 @@ public class PersonneRestService {
    * @param numEtudiant le numéro étudiant
    * @return les infos d'un étudiant
    */
-  @ApiOperation(value = "Recherche d'un étudiant.")
+  @ApiOperation(value = "Datahub d'un étudiant.")
   @GetMapping(value = "/etudiant/{numEtudiant}", produces = "application/json")
   public String getStudent(@PathVariable("numEtudiant") String numEtudiant) {
     List<String> listCols = new ArrayList<>();
@@ -140,12 +140,12 @@ public class PersonneRestService {
   }
 
   /**
-   * Recherche avancée en utilisant les critères de recherche Eudonet
+   * Datahub avancée en utilisant les critères de recherche Eudonet
    *
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères
    */
-  @ApiOperation(value = "Recherche Eudonet avancée d'une personne.")
+  @ApiOperation(value = "Datahub Eudonet avancée d'une personne.")
   @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json")
   public String search(@RequestBody CustomSearch customSearch) {
     try {

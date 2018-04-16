@@ -6,12 +6,9 @@ import com.example.demo.Business.DictionnaryMetier;
 import com.example.demo.Domain.Catalogue;
 import com.example.demo.Domain.Definition;
 import com.example.demo.Domain.Dictionnary;
-import com.example.demo.EudoNet.EudoNetAPI;
 import com.example.demo.EudoNet.JsonEntities.Criteria;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
-import com.example.demo.EudoNet.JsonEntities.OrderBy;
 import com.example.demo.EudoNet.JsonEntities.WhereCustom;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PersonneServiceImp implements PersonneService {
@@ -32,7 +27,7 @@ public class PersonneServiceImp implements PersonneService {
   @Autowired
   private CatalogueMetier catalogueMetier;
   @Autowired
-  private EudoNetAPI eudoNetAPI;
+  private Datahub datahub;
 
   /**
    * Obtenir une liste d'un sous-type de personnes.
@@ -45,18 +40,12 @@ public class PersonneServiceImp implements PersonneService {
   public JSONObject getPersonsByType(String typePersonne, List<String> colLabels) throws UnirestException {
     JSONObject response = new JSONObject();
 
-    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
-    Map<Integer, String> map = this.buildTranslationMap(colLabels, personDic);
-
-    Criteria criteria = new Criteria(defintitionMetier.labelToDescId("Type", personDic), 9, catalogueMetier.labelToDescId(typePersonne));
+    Criteria criteria = new Criteria("Type", 9, catalogueMetier.labelToDescId(typePersonne));
     List<WhereCustom> whereCustoms = new ArrayList<>();
     whereCustoms.add(new WhereCustom());
     WhereCustom whereCustom = new WhereCustom(whereCustoms, criteria, 0);
-    List<OrderBy> orderBy = new ArrayList<>();
 
-    JSONArray personnesEudo = eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.keySet()), whereCustom, orderBy)).getObject().getJSONObject("ResultData").getJSONArray("Rows");
-
-    return prettify(personnesEudo, map);
+    return datahub.search(new CustomSearch(colLabels, whereCustom), "Personnes", "Personnes", "Personnes");
   }
 
   @Override
@@ -83,19 +72,13 @@ public class PersonneServiceImp implements PersonneService {
    */
   @Override
   public JSONObject getStudent(String numEtudiant, List<String> colLabels) throws UnirestException {
-    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
 
-    Map<Integer, String> map = this.buildTranslationMap(colLabels, personDic);
-
-    Criteria criteria = new Criteria(defintitionMetier.labelToDescId("N° étudiant", personDic), 9, numEtudiant);
+    Criteria criteria = new Criteria("N° étudiant", 9, numEtudiant);
     List<WhereCustom> whereCustoms = new ArrayList<>();
     whereCustoms.add(new WhereCustom());
     WhereCustom whereCustom = new WhereCustom(whereCustoms, criteria, 0);
-    List<OrderBy> orderBy = new ArrayList<>();
 
-    JSONArray personnesEudo = eudoNetAPI.search(personDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.keySet()), whereCustom, orderBy)).getObject().getJSONObject("ResultData").getJSONArray("Rows");
-
-    return prettify(personnesEudo, map);
+    return datahub.search(new CustomSearch(colLabels, whereCustom), "Personnes", "Personnes", "Personnes");
   }
 
 
@@ -108,73 +91,25 @@ public class PersonneServiceImp implements PersonneService {
    */
   @Override
   public JSONObject getOldTraineesByOrg(String organisation, List<String> colLabels) throws UnirestException {
-    Dictionnary orgaDic = dictionnaryMetier.labelToDictionnary("Organisme");
-    Dictionnary stageDic = dictionnaryMetier.labelToDictionnary("Stages");
-    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
-
-    Map<Integer, String> map = this.buildTranslationMap(colLabels, personDic);
-    Criteria criteria = new Criteria(defintitionMetier.labelToDescId("Sigle", orgaDic), 9, organisation);
+    Criteria criteria = new Criteria("Sigle", 9, organisation);
     List<WhereCustom> whereCustoms = new ArrayList<>();
     whereCustoms.add(new WhereCustom());
     WhereCustom whereCustom = new WhereCustom(whereCustoms, criteria, 0);
-    List<OrderBy> orderBy = new ArrayList<>();
 
-    JSONArray personnesEudo = eudoNetAPI.search(stageDic.getIdTable(), new CustomSearch(true, 0, 0, new ArrayList<>(map.keySet()), whereCustom, orderBy)).getObject().getJSONObject("ResultData").getJSONArray("Rows");
-
-    return prettify(personnesEudo, map);
+    return datahub.search(new CustomSearch(colLabels, whereCustom), "Stages", "Organisme", "Personnes");
   }
 
 
   /**
-   * Recherche avancée en utilisant les critères de recherche Eudonet.
+   * Datahub avancée en utilisant les critères de datahub Eudonet.
    *
-   * @param customSearch les critères de recherche
+   * @param customSearch les critères de datahub
    * @return la liste des personnes correspondantes aux critères
    * @throws UnirestException
    */
   @Override
-  public JsonNode search(CustomSearch customSearch) throws UnirestException {
-    return eudoNetAPI.search(dictionnaryMetier.labelToDictionnary("Personnes").getIdTable(), customSearch);
-  }
-
-  /**
-   * Créer un Json simplifié en gardant que les champs définis dans le hashmap.
-   *
-   * @param personnesEudo le Json provenant de l'API EudoNet
-   * @param map           Contient le mapping entre les descIds Eudonet et leur label
-   * @return
-   */
-  private JSONObject prettify(JSONArray personnesEudo, Map<Integer, String> map) {
-    JSONObject response = new JSONObject();
-    JSONArray personnes = new JSONArray();
-    for (int i = 0; i < personnesEudo.length(); i++) {
-      JSONObject champsArray = personnesEudo.getJSONObject(i);
-      JSONArray champs = champsArray.getJSONArray("Fields");
-      JSONObject personne = new JSONObject();
-      for (int j = 0; j < champs.length(); j++) {
-        JSONObject champ = champs.getJSONObject(j);
-        personne.put(map.get(champ.getInt("DescId")), champ.get("Value"));
-      }
-      personnes.put(personne);
-    }
-    response.put("Results", personnes);
-
-    return response;
-  }
-
-  /**
-   * Construit un traducteur de descId en label.
-   *
-   * @param colLabels la liste des labels
-   * @param dico      le dictionnaire
-   * @return
-   */
-  private Map<Integer, String> buildTranslationMap(List<String> colLabels, Dictionnary dico) {
-    Map<Integer, String> map = new HashMap<>();
-    for (String col : colLabels) {
-      String id = defintitionMetier.labelToDescId(col, dico);
-      map.put(Integer.parseInt(id), col);
-    }
-    return map;
+  public JSONObject search(CustomSearch customSearch) throws UnirestException {
+    Dictionnary personDic = dictionnaryMetier.labelToDictionnary("Personnes");
+    return datahub.search(customSearch, "Personnes", "Personnes", "Personnes");
   }
 }

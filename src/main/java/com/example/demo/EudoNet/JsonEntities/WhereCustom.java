@@ -10,13 +10,13 @@ public class WhereCustom {
 
   @SerializedName("WhereCustoms")
   @Expose
-  public List<WhereCustom> whereCustoms = null;
+  public List<WhereCustom> filtres = null;
   @SerializedName("Criteria")
   @Expose
-  public Criteria criteria;
+  public Criteria critere;
   @SerializedName("InterOperator")
   @Expose
-  public Integer interOperator;
+  public Integer operateurInterFiltres;
 
   /**
    * No args constructor for use in serialization
@@ -25,15 +25,30 @@ public class WhereCustom {
   }
 
   /**
-   * @param interOperator Opérateur logique entre ce critère et le précédent
-   * @param criteria      Critère
-   * @param whereCustoms  Liste de sous-critères
+   * @param operateurInterFiltres Opérateur logique entre ce critère et le précédent
+   * @param critere      Critère
+   * @param filtres  Liste de sous-critères
    */
-  public WhereCustom(List<WhereCustom> whereCustoms, Criteria criteria, Integer interOperator) {
+  public WhereCustom(List<WhereCustom> filtres, Criteria critere, Integer operateurInterFiltres) {
     super();
-    this.whereCustoms = whereCustoms;
-    this.criteria = criteria;
-    this.interOperator = interOperator;
+    this.filtres = filtres;
+    this.critere = critere;
+    this.operateurInterFiltres = operateurInterFiltres;
   }
 
+  public List<WhereCustom> getFiltres() {
+    return filtres;
+  }
+
+  public void setFiltres(List<WhereCustom> filtres) {
+    this.filtres = filtres;
+  }
+
+  public Criteria getCritere() {
+    return critere;
+  }
+
+  public void setCritere(Criteria critere) {
+    this.critere = critere;
+  }
 }
