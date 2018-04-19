@@ -12,27 +12,46 @@ import java.util.List;
  */
 @Service
 public class DictionnaryMetierImpl implements DictionnaryMetier {
-    @Autowired
-    private DictionnaryRepository dictionnaryRepository;
+  @Autowired
+  private DictionnaryRepository dictionnaryRepository;
 
-    @Override
-    public Dictionnary addInfo(Dictionnary info) {
-        System.out.println(info);
-        return dictionnaryRepository.saveAndFlush(info);
-    }
+  /**
+   * Enregistrer le dictionnaire.
+   *
+   * @param dictionnary le dictionnaire
+   * @return le dictionnaire
+   */
+  @Override
+  public Dictionnary saveDictionnary(Dictionnary dictionnary) {
+    return dictionnaryRepository.saveAndFlush(dictionnary);
+  }
 
-    @Override
-    public Dictionnary labelToDictionnary(String label) {
-        return dictionnaryRepository.findByTableName(label);
-    }
+  /**
+   * Obtenir le dictionnaire en fonction de son label.
+   *
+   * @param label le label
+   * @return le dictionnaire
+   */
+  @Override
+  public Dictionnary labelToDictionnary(String label) {
+    return dictionnaryRepository.findByTableName(label);
+  }
 
-    @Override
-    public List<Dictionnary> getAllTables() {
-        return dictionnaryRepository.findAll();
-    }
+  /**
+   * Retourne la liste de tous les dictionnaires.
+   *
+   * @return la liste de tous les dictionnaires
+   */
+  @Override
+  public List<Dictionnary> getAllTables() {
+    return dictionnaryRepository.findAll();
+  }
 
-    @Override
-    public void DeleteAll() {
-        dictionnaryRepository.deleteAll();
-    }
+  /**
+   * Supprimer tous les dictionnaires.
+   */
+  @Override
+  public void DeleteAll() {
+    dictionnaryRepository.deleteAll();
+  }
 }

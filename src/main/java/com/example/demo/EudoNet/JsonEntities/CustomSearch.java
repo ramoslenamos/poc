@@ -23,8 +23,8 @@ public class CustomSearch {
   /**
    * Constructeur d'une recherche avancée.
    *
-   * @param filtre  Critères de recherches
-   * @param listeProprietes     Liste des descId des champs souhaités
+   * @param filtre          Critères de recherches
+   * @param listeProprietes Liste des descId des champs souhaités
    */
   public CustomSearch(List<String> listeProprietes, WhereCustom filtre) {
     super();

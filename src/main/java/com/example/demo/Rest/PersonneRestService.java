@@ -140,7 +140,7 @@ public class PersonneRestService {
   }
 
   /**
-   * Datahub avancée en utilisant les critères de recherche Eudonet
+   * Datahub avancée en utilisant les critères de recherche Eudonet.
    *
    * @param customSearch les critères de recherche
    * @return la liste des personnes correspondantes aux critères

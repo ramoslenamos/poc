@@ -13,6 +13,6 @@ import java.util.List;
 public interface DefinitionRepository extends JpaRepository<Definition, Long> {
   @Query(value = "SELECT * from Definition d   where d.label=?1 and d.id_table=?2",nativeQuery = true)
   Definition findByLabelIdTable(String label, Long idTable);
-  Definition findByIdColoumn(String idColoumn);
+  Definition findByIdColumn(String idColumn);
   List<Definition> findByTableName(Dictionnary dictionnary);
 }

@@ -6,10 +6,34 @@ import java.util.List;
 
 /**
  * Created by othmane on 19/03/2018.
+ * Mapping des tables Eudonet.
  */
 public interface DictionnaryMetier {
-    public Dictionnary addInfo(Dictionnary info);
-    public Dictionnary labelToDictionnary(String label);
-    public List<Dictionnary> getAllTables();
-    public void DeleteAll();
+  /**
+   * Enregistrer le dictionnaire.
+   *
+   * @param dictionnary le dictionnaire
+   * @return le dictionnaire
+   */
+  public Dictionnary saveDictionnary(Dictionnary dictionnary);
+
+  /**
+   * Obtenir le dictionnaire en fonction de son label.
+   *
+   * @param label le label
+   * @return le dictionnaire
+   */
+  public Dictionnary labelToDictionnary(String label);
+
+  /**
+   * Retourne la liste de tous les dictionnaires.
+   *
+   * @return la liste de tous les dictionnaires
+   */
+  public List<Dictionnary> getAllTables();
+
+  /**
+   * Supprimer tous les dictionnaires.
+   */
+  public void DeleteAll();
 }

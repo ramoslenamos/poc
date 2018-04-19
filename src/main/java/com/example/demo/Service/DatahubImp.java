@@ -7,6 +7,7 @@ import com.example.demo.Domain.Dictionnary;
 import com.example.demo.EudoNet.EudoNetAPI;
 import com.example.demo.EudoNet.JsonEntities.CustomSearch;
 import com.example.demo.EudoNet.JsonEntities.WhereCustom;
+import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,15 +28,27 @@ public class DatahubImp implements Datahub {
   @Autowired
   private DictionnaryMetier dictionnaryMetier;
 
+  /**
+   * Recherche approfondie.
+   * Info : On peut avoir trois domaines différents dans une recherche (voir service getOldTraineesByOrg).
+   *
+   * @param customSearch         la recherche.
+   * @param dictionnarySearchLab le domaine dans lequel chercher.
+   * @param dictionnaryCritLab   le domaine des propriétés utilisées en filtres.
+   * @param dictionnaryResLab    le domaine des propriétés renvoyées dans les résultat.
+   * @return le résultat de la recherche
+   * @throws UnirestException
+   */
   @Override
   public JSONObject search(CustomSearch customSearch, String dictionnarySearchLab, String dictionnaryCritLab, String dictionnaryResLab) throws UnirestException {
+    System.out.println("RECHERCHE : " + new GsonBuilder().create().toJson(customSearch, CustomSearch.class));
     Dictionnary dictionnarySearch = dictionnaryMetier.labelToDictionnary(dictionnarySearchLab);
     Dictionnary dictionnaryCrit = dictionnaryMetier.labelToDictionnary(dictionnaryCritLab);
     Dictionnary dictionnaryRes = dictionnaryMetier.labelToDictionnary(dictionnaryResLab);
 
     Map<String, String> map = new HashMap<>();
     List<String> definitionsDescIds = new ArrayList<>();
-    for (String propriete: customSearch.getListeProprietes()) {
+    for (String propriete : customSearch.getListeProprietes()) {
       definitionsDescIds.add(defintitionMetier.labelToDescId(propriete, dictionnaryRes));
       String id = defintitionMetier.labelToDescId(propriete, dictionnaryRes);
       map.put(id, propriete);
@@ -44,32 +57,43 @@ public class DatahubImp implements Datahub {
     String champLabel = customSearch.getFiltre().getCritere().getChamp();
     customSearch.getFiltre().getCritere().setChamp(defintitionMetier.labelToDescId(champLabel, dictionnaryCrit));
 
-    if(customSearch.getFiltre().getFiltres() != null){
-      if(customSearch.getFiltre().getFiltres().get(0) != null) {
+    if (customSearch.getFiltre().getFiltres() != null) {
+      if (customSearch.getFiltre().getFiltres().get(0) != null) {
         customSearch.getFiltre().setFiltres(this.translateFiltres(customSearch.getFiltre().getFiltres(), dictionnarySearch));
-      }else{
+      } else {
         customSearch.getFiltre().getFiltres().remove(0);
         WhereCustom wc = new WhereCustom();
         wc.setFiltres(new ArrayList<>());
       }
     }
-
-    JSONArray resultsEudo = eudoNetAPI.search(dictionnarySearch.getIdTable(), customSearch).getObject().getJSONObject("ResultData").getJSONArray("Rows");;
+    JSONArray resultsEudo = eudoNetAPI.search(dictionnarySearch.getIdTable(), customSearch).getObject().getJSONObject("ResultData").getJSONArray("Rows");
+    ;
     return prettify(resultsEudo, map);
   }
 
+  /**
+   * Obtenir la liste des domaines.
+   *
+   * @return la liste des domaines
+   */
   @Override
   public JSONObject getDomains() {
-      List<Dictionnary> dictionnaries = dictionnaryMetier.getAllTables();
-      JSONObject response = new JSONObject();
-      JSONArray domains = new JSONArray();
-      for (Dictionnary dictionnary : dictionnaries) {
-        domains.put(dictionnary.getTableName());
-      }
-      response.put("Domaines", domains);
-      return response;
+    List<Dictionnary> dictionnaries = dictionnaryMetier.getAllTables();
+    JSONObject response = new JSONObject();
+    JSONArray domains = new JSONArray();
+    for (Dictionnary dictionnary : dictionnaries) {
+      domains.put(dictionnary.getTableName());
+    }
+    response.put("Domaines", domains);
+    return response;
   }
 
+  /**
+   * Obtenir la liste des propriétés d'un domaine.
+   *
+   * @param domain le domaine
+   * @return la liste des propriétés d'un domaine.
+   */
   @Override
   public JSONObject getProperties(String domain) {
     Dictionnary dictionnary = dictionnaryMetier.labelToDictionnary(domain);
@@ -83,16 +107,23 @@ public class DatahubImp implements Datahub {
     return response;
   }
 
-  private List<WhereCustom> translateFiltres(List<WhereCustom> wc, Dictionnary dictionnary){
-    for (WhereCustom f: wc) {
-      if (f != null && f.getCritere()!=null) {
+  /**
+   * traduction des labels contenus dans les filtres en descId Eudonet.
+   *
+   * @param wc          les filtres
+   * @param dictionnary le dictionnaire
+   * @return
+   */
+  private List<WhereCustom> translateFiltres(List<WhereCustom> wc, Dictionnary dictionnary) {
+    for (WhereCustom f : wc) {
+      if (f != null && f.getCritere() != null) {
         String champLabel = f.getCritere().getChamp();
         f.getCritere().setChamp(defintitionMetier.labelToDescId(champLabel, dictionnary));
         if (f.getFiltres() != null) {
-          f.setFiltres(this.translateFiltres(f.getFiltres(),dictionnary));
+          f.setFiltres(this.translateFiltres(f.getFiltres(), dictionnary));
         }
-      }else{
-        f= new WhereCustom();
+      } else {
+        f = new WhereCustom();
         f.setFiltres(new ArrayList<>());
       }
     }
@@ -103,7 +134,7 @@ public class DatahubImp implements Datahub {
    * Créer un Json simplifié en gardant que les champs définis dans le hashmap.
    *
    * @param resultsEudo le Json provenant de l'API EudoNet
-   * @param map           Contient le mapping entre les descIds Eudonet et leur label
+   * @param map         Contient le mapping entre les descIds Eudonet et leur label
    * @return
    */
   private JSONObject prettify(JSONArray resultsEudo, Map<String, String> map) {

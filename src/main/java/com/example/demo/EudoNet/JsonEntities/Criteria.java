@@ -25,14 +25,14 @@ public class Criteria {
   /**
    * Constructeur Criteria.
    *
-   * @param field    Descid du champ du critère
-   * @param operator Opérateur logique de comparaison entre le 'Field' et la 'Value'
-   * @param valeur    Valuer de comparaison
+   * @param champ    champ du critère
+   * @param operateur opérateur logique de comparaison entre le champ et la valeur
+   * @param valeur   valeur de comparaison
    */
-  public Criteria(String field, Integer operator, String valeur) {
+  public Criteria(String champ, Integer operateur, String valeur) {
     super();
-    this.champ = field;
-    this.operateur = operator;
+    this.champ = champ;
+    this.operateur = operateur;
     this.valeur = valeur;
   }
 

@@ -1,12 +1,40 @@
 /**
  * Created by othmane on 19/03/2018.
  */
-var app = angular.module("MyApp", ['ngResource']);
+var app = angular.module("MyApp", ['ngResource','ui.router','datatables', 'datatables.buttons',
+    'datatables.bootstrap','datatables.columnfilter']);
 
-
-
-
-
+app.factory("getEtudiant", function($resource) {
+    return $resource("http://localhost:8081/api/personne/etudiants");
+});
+app.factory("getStagiaires", function($resource) {
+    return $resource("http://localhost:8081/api/personne/stagiaire/:stage");
+});
+app.factory("getDomaines", function($resource) {
+    return $resource("http://localhost:8081/api/domaines");
+});
+app.factory("getProprietiesByDomaine", function($resource) {
+    return $resource("http://localhost:8081/api/proprietes/:domaine");
+});
+app.factory("chercherParDomaine", function($resource) {
+    return $resource("http://localhost:8081/api/search/:domaine",
+        {},
+        {
+            save: {
+                method: 'POST'
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+});
+app.factory("getTypes", function($resource) {
+    return $resource("http://localhost:8081/api/personne/types");
+});
+app.factory("getPersonParType", function($resource) {
+    return $resource("http://localhost:8081/api/personne/:type");
+});
 app.factory("getTabInfo", function($resource)
     {
         return $resource('http://xrm3.eudonet.com/EudoAPI/Search/:tabId',
@@ -92,77 +120,419 @@ app.factory("addDictionnary", function($resource) {
         }
     );
 });
-app.run(function (listMetaTables,addDictionnary,Authentification,listMetaColumn,getTabInfo)
-{
-    /*var header=({
-        "SubscriberLogin": "ISTIC INFO",
-        "SubscriberPassword": "isticinfo2017",
-        "BaseName": "eudo_07011",
-        "UserLogin": "UTILISATEUR01_ISTIC",
-        "UserPassword": "projet2018",
-        "UserLang": "lang_00",
-        "ProductName": "TEST"
-    });*/
-    /*Authentification.save(header,function(data){
-        console.log(data.ResultData.Token)
-    })*/
+app.run(function() {
+    console.log("salut")
+});
+app.controller("getEtudiants", function($scope,listMetaTables,getEtudiant,DTOptionsBuilder, DTColumnDefBuilder) {
 
 
+    var vm = this;
+    vm.persons = [];
+
+    vm.dtOptions = DTOptionsBuilder.newOptions().withDOM('Blfrtip').withBootstrap().withPaginationType('full_numbers').withDisplayLength(15).withButtons([
+
+        {
+            extend: "excelHtml5",
+            name: 'Excel',
+            title: 'DeviseTable',
+
+            text : '<i class="fa fa-file-excel-o black  growExport "></i>',
 
 
-    listMetaTables.get(function(data) {
+            titleAttr: 'Exporter en Excel',
 
-        angular.forEach(data.ResultMetaData.Tables, function(item) {
-            var info=new Array();
-            info=({idTable:item.Descid,tableName:item.Label})
+            //CharSet: "utf8",
+            exportData: { decodeEntities: true }
 
-            addDictionnary.save(info,function () {
+        },
+        {
+            extend: "csvHtml5",
 
-            },function () {
-                console.log("ERREUR")
-            })
-        });
-    });
-    listMetaColumn.get({
-        "Tables": [
-            {
-                "DescId": 200,
-                "AllFields": true,
-                "Fields": [
-                    0
-                ]
-            }
-        ]
-    },function (data) {
-        console.log(data)
-    },function () {
-        console.log("ERREUR")
-    })
-    var tabInfo={
-        "ShowMetadata": true,
-        "RowsPerPage": 50,
-        "NumPage": 10,
-        "ListCols": [
-            201, 202, 209
-        ],
-        "WhereCustom": {
-            "WhereCustoms": [
-                {}
-            ],
-            "Criteria": {
-                "Operator": 0,
-                "Field": "209"
-            },
-            "InterOperator": "0"
+            text: ' <i class="fa fa-table black growExport" aria-hidden="true"></i>',
+            title: 'DeviseTable',
+            fileName:  "ExcelVersion" + ".xlsx",
+            titleAttr: 'Exporter en CSV',
+
+            exportData: {decodeEntities:true}
         }
-    }
-    var tabId=200
-    getTabInfo.get({tabId : tabId},tabInfo,function (data) {
-    console.log(data)
+        ,{
+            extend: "copy",
+            exportOptions: {
+                columns: ':contains("Office")'
+            },
+            name: 'Copier',
+            text : '<i class="fa fa-copy  growExport black"></i>',
+            className: 'btn btn-default btn-sm ',
+            titleAttr: 'Copier',
+
+
+            exportData: {decodeEntities:true}
+        } ,{
+            extend: "print",
+            name: 'Imprimer',
+            text: '<span aria-hidden="true" class=" fa fa-print"></span>',
+            titleAttr: 'Imprimer',
+
+            exportData: {decodeEntities:true}
+        } ,
+        {
+            extend: "pdfHtml5",
+            name: 'Pdf',
+            title: 'DeviseTable',
+            text: '<i class="fa fa-file-pdf-o  ">',
+            fileName:  "Pdf" ,
+            message: 'Table de devises',
+            orientation: 'landscape',
+            titleAttr: 'Exporter en PDF',
+            pageSize: 'LEGAL',
+            exportData: {decodeEntities:true}
+        }, {
+            text: '<i class="fa fa-file-code-o growExport black" aria-hidden="true" ></i>',
+            titleAttr: 'Exporter en JSON',
+            action: function ( e, dt, button, config ) {
+                var data = dt.buttons.exportData();
+
+                $.fn.dataTable.fileSave(
+                    new Blob( [ JSON.stringify( data ) ] ),
+                    'Export.json'
+                );
+            }
+        }
+
+    ]).withBootstrap()
+    ;
+
+    vm.dtColumnDefs = [
+        DTColumnDefBuilder.newColumnDef(0),
+        DTColumnDefBuilder.newColumnDef(1),
+        DTColumnDefBuilder.newColumnDef(2),
+        DTColumnDefBuilder.newColumnDef(3)
+
+
+    ];
+
+    getEtudiant.get(function (data) {
+        console.log(data)
+        console.log(data.Results)
+        vm.persons=data.Results
     })
 });
-app.controller("HomeController", function($scope,listMetaTables) {
+
+app.controller("getStagiaires", function(getStagiaires,$scope,listMetaTables,getEtudiant,DTOptionsBuilder, DTColumnDefBuilder) {
+$scope.clicked=0;
+    var vm = this;
+    vm.persons = [];
+
+    vm.dtOptions = DTOptionsBuilder.newOptions().withDOM('Blfrtip').withBootstrap().withPaginationType('full_numbers').withDisplayLength(15).withButtons([
+
+        {
+            extend: "excelHtml5",
+            name: 'Excel',
+            title: 'DeviseTable',
+
+            text : '<i class="fa fa-file-excel-o black  growExport "></i>',
 
 
-});
+            titleAttr: 'Exporter en Excel',
 
+            //CharSet: "utf8",
+            exportData: { decodeEntities: true }
+
+        },
+        {
+            extend: "csvHtml5",
+
+            text: ' <i class="fa fa-table black growExport" aria-hidden="true"></i>',
+            title: 'DeviseTable',
+            fileName:  "ExcelVersion" + ".xlsx",
+            titleAttr: 'Exporter en CSV',
+
+            exportData: {decodeEntities:true}
+        }
+        ,{
+            extend: "copy",
+            exportOptions: {
+                columns: ':contains("Office")'
+            },
+            name: 'Copier',
+            text : '<i class="fa fa-copy  growExport black"></i>',
+            className: 'btn btn-default btn-sm ',
+            titleAttr: 'Copier',
+
+
+            exportData: {decodeEntities:true}
+        } ,{
+            extend: "print",
+            name: 'Imprimer',
+            text: '<span aria-hidden="true" class=" fa fa-print"></span>',
+            titleAttr: 'Imprimer',
+
+            exportData: {decodeEntities:true}
+        } ,
+        {
+            extend: "pdfHtml5",
+            name: 'Pdf',
+            title: 'DeviseTable',
+            text: '<i class="fa fa-file-pdf-o  ">',
+            fileName:  "Pdf" ,
+            message: 'Table de devises',
+            orientation: 'landscape',
+            titleAttr: 'Exporter en PDF',
+            pageSize: 'LEGAL',
+            exportData: {decodeEntities:true}
+        }, {
+            text: '<i class="fa fa-file-code-o growExport black" aria-hidden="true" ></i>',
+            titleAttr: 'Exporter en JSON',
+            action: function ( e, dt, button, config ) {
+                var data = dt.buttons.exportData();
+
+                $.fn.dataTable.fileSave(
+                    new Blob( [ JSON.stringify( data ) ] ),
+                    'Export.json'
+                );
+            }
+        }
+
+    ]).withBootstrap()
+    ;
+
+    vm.dtColumnDefs = [
+        DTColumnDefBuilder.newColumnDef(0),
+        DTColumnDefBuilder.newColumnDef(1)
+
+
+
+    ];
+    $scope.chercherEtudiants=function (stage) {
+        $scope.clicked=1;
+        getStagiaires.get({ stage: stage}, function(data){
+            console.log(data)
+            vm.persons=data.Results;
+        })
+    }
+
+
+})
+app.controller("getParType", function(getPersonParType,getTypes,$scope,DTOptionsBuilder, DTColumnDefBuilder) {
+getTypes.get(function (data) {
+    $scope.types=data.Types;
+})
+    var type="étudiant";
+
+
+    $scope.clicked=0;
+    var vm = this;
+    vm.persons = [];
+
+    vm.dtOptions = DTOptionsBuilder.newOptions().withDOM('Blfrtip').withBootstrap().withPaginationType('full_numbers').withDisplayLength(15).withButtons([
+
+        {
+            extend: "excelHtml5",
+            name: 'Excel',
+            title: 'DeviseTable',
+
+            text : '<i class="fa fa-file-excel-o black  growExport "></i>',
+
+
+            titleAttr: 'Exporter en Excel',
+
+            //CharSet: "utf8",
+            exportData: { decodeEntities: true }
+
+        },
+        {
+            extend: "csvHtml5",
+
+            text: ' <i class="fa fa-table black growExport" aria-hidden="true"></i>',
+            title: 'DeviseTable',
+            fileName:  "ExcelVersion" + ".xlsx",
+            titleAttr: 'Exporter en CSV',
+
+            exportData: {decodeEntities:true}
+        }
+        ,{
+            extend: "copy",
+            exportOptions: {
+                columns: ':contains("Office")'
+            },
+            name: 'Copier',
+            text : '<i class="fa fa-copy  growExport black"></i>',
+            className: 'btn btn-default btn-sm ',
+            titleAttr: 'Copier',
+
+
+            exportData: {decodeEntities:true}
+        } ,{
+            extend: "print",
+            name: 'Imprimer',
+            text: '<span aria-hidden="true" class=" fa fa-print"></span>',
+            titleAttr: 'Imprimer',
+
+            exportData: {decodeEntities:true}
+        } ,
+        {
+            extend: "pdfHtml5",
+            name: 'Pdf',
+            title: 'DeviseTable',
+            text: '<i class="fa fa-file-pdf-o  ">',
+            fileName:  "Pdf" ,
+            message: 'Table de devises',
+            orientation: 'landscape',
+            titleAttr: 'Exporter en PDF',
+            pageSize: 'LEGAL',
+            exportData: {decodeEntities:true}
+        }, {
+            text: '<i class="fa fa-file-code-o growExport black" aria-hidden="true" ></i>',
+            titleAttr: 'Exporter en JSON',
+            action: function ( e, dt, button, config ) {
+                var data = dt.buttons.exportData();
+
+                $.fn.dataTable.fileSave(
+                    new Blob( [ JSON.stringify( data ) ] ),
+                    'Export.json'
+                );
+            }
+        }
+
+    ]).withBootstrap()
+    ;
+
+    vm.dtColumnDefs = [
+        DTColumnDefBuilder.newColumnDef(0),
+        DTColumnDefBuilder.newColumnDef(1)
+
+
+
+    ];
+
+
+$scope.selectType=function (typeSelected) {
+    getPersonParType.get({ type: typeSelected},function (data) {
+        vm.persons=data.Results;
+        $scope.clicked=1;
+    })
+}
+
+
+
+
+})
+app.controller("getByDomaine", function(getProprietiesByDomaine,getDomaines,chercherParDomaine,getTypes,$scope,DTOptionsBuilder, DTColumnDefBuilder) {
+
+    getDomaines.get(function (data) {
+        $scope.domaines=data.Domaines
+        console.log($scope.domaines)
+
+    })
+
+    $scope.operateurs=new Array()
+    $scope.operateurs=["Egal","Inférieur","Inférieur ou égal","Supérieur","Supérieur ou égal","Différent","Débute par"
+    ,"Finit par","Est dans la liste","Contient","Est vide","Vrai","Faux","Ne débute pas par","Ne finit pas par"
+        ,"N'est pas dans la liste","Ne contient pas","N'est pas vide","Soundex"]
+
+
+
+    $scope.domaineIsSelected=0;
+$scope.selectDomain=function (domainSelected) {
+$scope.domaineSelected=domainSelected
+    $scope.domaineIsSelected=1
+    getProprietiesByDomaine.get({domaine: domainSelected},function (data) {
+        $scope.proprietes=data.Proprietes
+    })
+}
+$scope.op=""
+$scope.selectOp=function (op) {
+
+console.log(op)
+    switch(op) {
+        case "Egal":
+            op=0
+            break;
+        case "Inférieur":
+            op=1
+            break;
+        case "Inférieur ou égal":
+            op=2
+            break;
+        case "Supérieur":
+            op=3
+            break;
+        case "Supérieur ou égal":
+            op=4
+            break;
+        case "Différent":
+            op=5
+            break;
+        case "Débute par":
+            op=6
+            break;
+        case "Finit par":
+            op=7
+            break;
+        case "Est dans la liste":
+            op=8
+            break;
+        case "Contient":
+            op=9
+            break;
+        case "Est vide":
+            op=10
+            break;
+        case "Vrai":
+            op=11
+            break;
+        case "Faux":
+            op=12
+            break;
+        case "Ne débute pas par":
+            op=13
+            break;
+        case "Ne finit pas par":
+            op=14
+            break;
+        case "N'est pas dans la liste":
+            op=15
+            break;
+        case "Ne contient pas":
+            op=16
+            break;
+        case "N'est pas vide":
+            op=17
+            break;
+        case "Soundex":
+            op=18
+            break;
+
+        default:
+            console.log("erreyr")
+    }
+    $scope.op=op
+}
+$scope.selection=""
+$scope.getSelection=function (selection) {
+    $scope.selection=selection
+}
+$scope.proprieteSelected=""
+$scope.selectPropriete=function (proprieteSelected) {
+    $scope.proprieteSelected=proprieteSelected
+}
+
+$scope.clicked=0;
+$scope.buildJson=function () {
+    var json=new Array();
+
+    json=({
+        filtre : {critere:{champ: $scope.proprieteSelected,
+            operateur:$scope.op ,
+
+            valeur: $scope.valeur},filtres:[null],operateurInterFiltre:0},listeProprietes:$scope.selection});
+
+    console.log(json)
+    $scope.clicked=1;
+    chercherParDomaine.save({domaine:$scope.domaineSelected},json,function (data) {
+        $scope.resultats=data.Results
+    })
+}
+
+
+})

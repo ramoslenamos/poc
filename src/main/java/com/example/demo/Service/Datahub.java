@@ -7,20 +7,21 @@ import org.json.JSONObject;
 public interface Datahub {
   /**
    * Recherche approfondie.
+   * Info : On peut avoir trois domaines différents dans une recherche (voir service getOldTraineesByOrg).
    *
-   * @param customSearch      la recherche.
-   * @param dictionnarySearch le domaine dans lequel chercher.
-   * @param dictionnaryCrit   le domaine des propriétés utilisées en filtres.
-   * @param dictionnaryRes    le domaine des propriétés renvoyées dans les résultat.
+   * @param customSearch         la recherche.
+   * @param dictionnarySearchLab le domaine dans lequel chercher.
+   * @param dictionnaryCritLab   le domaine des propriétés utilisées en filtres.
+   * @param dictionnaryResLab    le domaine des propriétés renvoyées dans les résultat.
    * @return le résultat de la recherche
    * @throws UnirestException
    */
-  public JSONObject search(CustomSearch customSearch, String dictionnarySearch, String dictionnaryCrit, String dictionnaryRes) throws UnirestException;
+  public JSONObject search(CustomSearch customSearch, String dictionnarySearchLab, String dictionnaryCritLab, String dictionnaryResLab) throws UnirestException;
 
   /**
    * Obtenir la liste des domaines.
    *
-   * @return
+   * @return la liste des domaines
    */
   public JSONObject getDomains();
 

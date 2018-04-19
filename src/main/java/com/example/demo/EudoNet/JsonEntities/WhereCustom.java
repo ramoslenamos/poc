@@ -26,8 +26,8 @@ public class WhereCustom {
 
   /**
    * @param operateurInterFiltres Opérateur logique entre ce critère et le précédent
-   * @param critere      Critère
-   * @param filtres  Liste de sous-critères
+   * @param critere               Critère
+   * @param filtres               Liste de sous-critères
    */
   public WhereCustom(List<WhereCustom> filtres, Criteria critere, Integer operateurInterFiltres) {
     super();
